@@ -97,7 +97,7 @@ export function TutorPage() {
     : "";
 
   return (
-    <main className="screen">
+    <main className="screen chat-screen">
       <p className="kicker">Tutor</p>
       <h1>{mode === "correction" ? "Ask plainly." : "At the bar."}</h1>
       <div className="tabs">
