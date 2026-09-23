@@ -18,6 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from . import db, llm
+from .config import settings
 from .graph.agent_graph import run_agent
 from .public_api import router as public_router
 from .schemas import AgentRequest, QuizSubmit, WineLabel
@@ -46,7 +47,7 @@ def _model_failure(exc: Exception) -> HTTPException:
 
 @app.get("/health")
 def health():
-    return {"ok": True}
+    return {"ok": True, "chat_model": settings.chat_model}
 
 
 # --- Flow 1: OCR ---

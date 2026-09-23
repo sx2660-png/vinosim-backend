@@ -9,10 +9,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def _gemini_model(env_name: str, default: str) -> str:
+    value = os.getenv(env_name, default)
+    # gemini-2.0-flash is no longer served; keep older Railway env vars working.
+    if value == "gemini-2.0-flash":
+        return "gemini-2.5-flash"
+    return value
+
+
 class Settings:
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
-    chat_model: str = os.getenv("GEMINI_CHAT_MODEL", "gemini-2.0-flash")
-    vision_model: str = os.getenv("GEMINI_VISION_MODEL", "gemini-2.0-flash")
+    chat_model: str = _gemini_model("GEMINI_CHAT_MODEL", "gemini-2.5-flash")
+    vision_model: str = _gemini_model("GEMINI_VISION_MODEL", "gemini-2.5-flash")
     embed_model: str = os.getenv("GEMINI_EMBED_MODEL", "gemini-embedding-001")
     embed_dim: int = int(os.getenv("EMBED_DIM", "768"))
     database_url: str = os.getenv(
