@@ -1,4 +1,4 @@
-export const PUBLIC_API_BASE = "https://identity-surrounding-backup-later.trycloudflare.com";
+export const PUBLIC_API_BASE = "https://vinosim-backend-production.up.railway.app";
 
 export function apiBase(): string {
   const fromEnv = import.meta.env.VITE_API_BASE;
