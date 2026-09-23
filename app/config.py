@@ -13,7 +13,7 @@ class Settings:
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
     chat_model: str = os.getenv("GEMINI_CHAT_MODEL", "gemini-2.0-flash")
     vision_model: str = os.getenv("GEMINI_VISION_MODEL", "gemini-2.0-flash")
-    embed_model: str = os.getenv("GEMINI_EMBED_MODEL", "text-embedding-004")
+    embed_model: str = os.getenv("GEMINI_EMBED_MODEL", "gemini-embedding-001")
     embed_dim: int = int(os.getenv("EMBED_DIM", "768"))
     database_url: str = os.getenv(
         "DATABASE_URL", "postgresql://vinosim:vinosim@localhost:5432/vinosim"

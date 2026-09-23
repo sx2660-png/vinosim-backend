@@ -17,7 +17,10 @@ def embed(text: str, *, task_type: str = "RETRIEVAL_DOCUMENT") -> list[float]:
     resp = client.models.embed_content(
         model=settings.embed_model,
         contents=text,
-        config=types.EmbedContentConfig(task_type=task_type),
+        config=types.EmbedContentConfig(
+            task_type=task_type,
+            output_dimensionality=settings.embed_dim,
+        ),
     )
     return list(resp.embeddings[0].values)
 

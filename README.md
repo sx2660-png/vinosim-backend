@@ -68,7 +68,8 @@ curl -s localhost:8000/scan -F file=@/path/to/label.jpg | jq
 
 ## Notes
 - Requires a `GEMINI_API_KEY` (chat/embeddings/vision all go to Gemini, matching the original).
-- `wine_docs` embeddings are 768-dim (`text-embedding-004`); change `EMBED_DIM` **and** the
-  `vector(768)` column together if you switch embedding models.
+- `wine_docs` embeddings are 768-dim (`gemini-embedding-001`, truncated with
+  `output_dimensionality`). Change `EMBED_DIM` **and** the `vector(768)` column
+  together if you switch embedding models.
 - Retrieval here is single-route pgvector cosine similarity — the same as the n8n PGVector Store
   node. There is no hybrid/BM25/rerank; do not claim those.
