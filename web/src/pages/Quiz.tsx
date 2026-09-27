@@ -72,6 +72,7 @@ function BankQuiz() {
       {question && (
         <>
           <p className="meta">{question.category}</p>
+          {question.image && <img className="quiz-photo" src={question.image} alt="" />}
           <h2>{question.question}</h2>
           {question.options.map((option) => {
             let tone = "choice";
@@ -108,9 +109,14 @@ function LabelDecode() {
   const [checked, setChecked] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [preview, setPreview] = useState("");
 
   async function onFile(file: File | undefined) {
     if (!file) return;
+    setPreview((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return URL.createObjectURL(file);
+    });
     setBusy(true);
     setError("");
     setQuiz(null);
@@ -135,6 +141,7 @@ function LabelDecode() {
         <input hidden type="file" accept="image/*" onChange={(event) => void onFile(event.target.files?.[0])} />
       </label>
       {error && <p className="banner">{error}</p>}
+      {preview && <img className="quiz-photo" src={preview} alt="The label you chose" />}
       {quiz && (
         <>
           <h2>{quiz.question}</h2>

@@ -211,6 +211,7 @@ def quiz_get():
         "correct_answer": _option_for_letter(options, full["correct_answer"]),
         "explanation": full["explanation"],
         "category": full["category"],
+        "image_url": picked.get("image") or "",
     }
 
 

@@ -23,7 +23,10 @@ export function StudyPage() {
         <button className="back" onClick={() => setOpen(null)}>Back to reading</button>
         <p className="kicker">{open.category}</p>
         <h1>{open.title}</h1>
-        <p className="prose">{open.content}</p>
+        {open.image && <img className="hero" src={open.image} alt="" />}
+        {open.content.trim().split(/\n\n+/).filter(Boolean).map((paragraph) => (
+          <p className="prose" key={paragraph.slice(0, 40)}>{paragraph}</p>
+        ))}
       </main>
     );
   }
@@ -43,9 +46,10 @@ export function StudyPage() {
       <div className="stack">
         {articles.map((article) => (
           <button key={article.id} className="article" onClick={() => setOpen(article)}>
+            {article.image && <img src={article.image} alt="" />}
             <small>{article.category}</small>
             <strong>{article.title}</strong>
-            <p>{article.content}</p>
+            <p>{article.content.trim()}</p>
           </button>
         ))}
         {!error && articles.length === 0 && <p className="quiet">Nothing in this section yet.</p>}

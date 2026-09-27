@@ -92,12 +92,12 @@ def similarity_search(query_embedding: list[float], k: int) -> list[dict[str, An
 def random_question() -> dict[str, Any] | None:
     with cursor() as cur:
         cur.execute(
-            "SELECT id, question, options, category FROM quiz_questions ORDER BY random() LIMIT 1"
+            "SELECT id, question, options, category, image FROM quiz_questions ORDER BY random() LIMIT 1"
         )
         r = cur.fetchone()
     if not r:
         return None
-    return {"id": r[0], "question": r[1], "options": r[2], "category": r[3]}
+    return {"id": r[0], "question": r[1], "options": r[2], "category": r[3], "image": r[4] or ""}
 
 
 def get_question(question_id: int) -> dict[str, Any] | None:

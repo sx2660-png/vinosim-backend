@@ -25,9 +25,10 @@ export function HomePage() {
         <h2>From the reading table</h2>
         {articles.map((article) => (
           <Link key={article.id} className="article" to="/study">
+            {article.image && <img src={article.image} alt="" />}
             <small>{article.category}</small>
             <strong>{article.title}</strong>
-            <p>{article.content}</p>
+            <p>{article.content.trim()}</p>
           </Link>
         ))}
       </div>

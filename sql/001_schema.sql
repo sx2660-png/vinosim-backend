@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS quiz_questions (
     options        JSONB NOT NULL,       -- ["A ...", "B ...", ...]
     correct_answer TEXT NOT NULL,
     explanation    TEXT NOT NULL DEFAULT '',
-    category       TEXT NOT NULL DEFAULT 'general'
+    category       TEXT NOT NULL DEFAULT 'general',
+    image          TEXT NOT NULL DEFAULT ''
 );
 
 -- Quiz attempts (was: "Save History")

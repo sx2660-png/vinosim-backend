@@ -48,6 +48,7 @@ export type QuizQuestion = {
   question: string;
   options: string[];
   category: string;
+  image?: string;
 };
 
 export type QuizResult = {
