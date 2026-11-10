@@ -3,6 +3,5 @@ __pycache__/
 *.pyc
 .env
 web/node_modules/
-web/dist/
 uvicorn.log
 .DS_Store

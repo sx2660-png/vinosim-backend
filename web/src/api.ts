@@ -3,6 +3,9 @@ export const PUBLIC_API_BASE = "https://vinosim-backend-production.up.railway.ap
 export function apiBase(): string {
   const fromEnv = import.meta.env.VITE_API_BASE;
   if (fromEnv) return fromEnv.replace(/\/$/, "");
+  // `npm run dev` proxies the API routes to 127.0.0.1:8000, so the page and the API share one origin.
+  if (import.meta.env.DEV) return "";
+  // A production build opened on this machine talks to the local API directly.
   if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
     return "http://127.0.0.1:8000";
   }
