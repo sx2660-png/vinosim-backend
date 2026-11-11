@@ -40,11 +40,37 @@ cp .env.example .env              # then paste your GEMINI_API_KEY
 # 4. Embed the RAG knowledge base into pgvector
 python -m scripts.ingest
 
-# 5. Run
+# 5. Run the API
 uvicorn app.main:app --reload --port 8000
 ```
 
 Docs UI at http://localhost:8000/docs
+
+## Web client
+
+`web/` is the phone UI. It calls this API:
+
+| screen | call |
+|---|---|
+| Home, Study | `GET /articles` |
+| Quiz | `GET /quiz`, `POST /quiz/submit` |
+| Label quiz | `POST /label/decode` |
+| Tutor | `POST /agent`, `GET /agent/history`, `POST /scan` |
+
+Article and question photos are `/media/...` files in `web/public/media`. The API serves that folder, and it also serves `web/dist` at `/` when a production build is present.
+
+Two ways to open the UI:
+
+```bash
+# Dev: Vite on :5173 proxies /articles, /quiz, /agent, /scan, /label, /health to :8000
+cd web && npm install && npm run dev
+
+# One process: build, then open http://127.0.0.1:8000
+cd web && npm install && npm run build
+uvicorn app.main:app --port 8000
+```
+
+A deployed build whose host is not localhost calls `https://vinosim-backend-production.up.railway.app`. Set `VITE_API_BASE` to point a build at a different API. On localhost, a production build calls `http://127.0.0.1:8000` directly. The dev server uses the proxy instead, unless `VITE_API_BASE` is set.
 
 ## Try it
 
