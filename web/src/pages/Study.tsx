@@ -34,7 +34,7 @@ export function StudyPage() {
   return (
     <main className="screen">
       <p className="kicker">Study</p>
-      <h1>Reading table</h1>
+      <h1>One note at a time.</h1>
       <div className="tabs">
         {TABS.map((name) => (
           <button key={name} className={name === tab ? "tab active" : "tab"} onClick={() => setTab(name)}>
