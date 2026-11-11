@@ -66,8 +66,8 @@ export function CellarPage() {
   return (
     <main className="screen">
       <p className="kicker">Cellar</p>
-      <h1>Bottles you kept.</h1>
-      <p className="lede">Stored on this device. Scanning a label can drop one in here.</p>
+      <h1>The good stuff.</h1>
+      <p className="lede">Bottles you kept on this phone. A scanned label can land here.</p>
       <button className="btn" style={{ margin: "16px 0" }} onClick={() => setAdding(true)}>Add a bottle</button>
       <div className="stack">
         {wines.length === 0 && <p className="quiet">The cellar is empty.</p>}

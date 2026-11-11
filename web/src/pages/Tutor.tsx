@@ -99,7 +99,7 @@ export function TutorPage() {
   return (
     <main className="screen chat-screen">
       <p className="kicker">Tutor</p>
-      <h1>{mode === "correction" ? "Ask plainly." : "At the bar."}</h1>
+      <h1>{mode === "correction" ? "Let's taste together." : "Say it out loud."}</h1>
       <div className="tabs">
         <button className={mode === "correction" ? "tab active" : "tab"} onClick={() => setMode("correction")}>Correction</button>
         <button className={mode === "roleplay" ? "tab active" : "tab"} onClick={() => setMode("roleplay")}>Roleplay</button>

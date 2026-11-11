@@ -133,6 +133,12 @@ export function decodeLabel(file: File) {
   return read<LabelQuiz>("/label/decode", { method: "POST", body });
 }
 
+export type StoredLabelQuiz = LabelQuiz & { id: string; image_url: string };
+
+export function getLabelQuiz() {
+  return read<StoredLabelQuiz>("/webhook/get-label-quiz");
+}
+
 export function checkHealth() {
   return read<{ ok: boolean }>("/health");
 }

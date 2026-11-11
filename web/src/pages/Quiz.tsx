@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LabelQuiz, QuizQuestion, QuizResult, decodeLabel, getQuiz, submitQuiz } from "../api";
+import { QuizQuestion, QuizResult, StoredLabelQuiz, getLabelQuiz, getQuiz, submitQuiz } from "../api";
 
 function letterOf(option: string) {
   const match = option.trim().match(/^([A-D])\b/i);
@@ -12,14 +12,14 @@ function matches(option: string, correct: string) {
 }
 
 export function QuizPage() {
-  const [mode, setMode] = useState<"bank" | "label">("bank");
+  const [mode, setMode] = useState<"bank" | "label">("label");
   return (
     <main className="screen">
       <p className="kicker">Quiz</p>
-      <h1>{mode === "bank" ? "One question" : "From a label"}</h1>
+      <h1>Test your taste.</h1>
       <div className="tabs">
+        <button className={mode === "label" ? "tab active" : "tab"} onClick={() => setMode("label")}>Label card</button>
         <button className={mode === "bank" ? "tab active" : "tab"} onClick={() => setMode("bank")}>Bank</button>
-        <button className={mode === "label" ? "tab active" : "tab"} onClick={() => setMode("label")}>Label</button>
       </div>
       {mode === "bank" ? <BankQuiz /> : <LabelDecode />}
     </main>
@@ -104,46 +104,42 @@ function BankQuiz() {
 }
 
 function LabelDecode() {
-  const [quiz, setQuiz] = useState<LabelQuiz | null>(null);
+  const [quiz, setQuiz] = useState<StoredLabelQuiz | null>(null);
   const [picked, setPicked] = useState<string | null>(null);
   const [checked, setChecked] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [preview, setPreview] = useState("");
 
-  async function onFile(file: File | undefined) {
-    if (!file) return;
-    setPreview((current) => {
-      if (current) URL.revokeObjectURL(current);
-      return URL.createObjectURL(file);
-    });
+  async function load() {
     setBusy(true);
     setError("");
     setQuiz(null);
     setPicked(null);
     setChecked(false);
     try {
-      setQuiz(await decodeLabel(file));
+      setQuiz(await getLabelQuiz());
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not read that label.");
+      setError(err instanceof Error ? err.message : "Could not load a label.");
     } finally {
       setBusy(false);
     }
   }
 
+  useEffect(() => {
+    void load();
+  }, []);
+
   const correct = quiz && picked ? matches(picked, quiz.correct_answer) : false;
+
+  if (!quiz && !error) return <p className="quiet">{busy ? "Reading the label…" : "Fetching a label…"}</p>;
 
   return (
     <div className="stack">
-      <p className="lede">Upload a label photo. The question is written from what is actually printed.</p>
-      <label className="btn secondary" style={{ textAlign: "center" }}>
-        {busy ? "Reading…" : "Choose a photo"}
-        <input hidden type="file" accept="image/*" onChange={(event) => void onFile(event.target.files?.[0])} />
-      </label>
+      <p className="lede">One label, one question. The photo is the one this card was written from.</p>
       {error && <p className="banner">{error}</p>}
-      {preview && <img className="quiz-photo" src={preview} alt="The label you chose" />}
       {quiz && (
         <>
+          {quiz.image_url && <img className="quiz-photo" src={quiz.image_url} alt="" />}
           <h2>{quiz.question}</h2>
           {quiz.options.map((option) => {
             let tone = "choice";
@@ -162,8 +158,10 @@ function LabelDecode() {
               <p>{quiz.explanation}</p>
             </div>
           )}
-          {!checked && (
-            <button className="btn block" disabled={!picked} onClick={() => setChecked(true)}>Check answer</button>
+          {checked ? (
+            <button className="btn block" onClick={() => void load()} disabled={busy}>Another label</button>
+          ) : (
+            <button className="btn block" disabled={!picked || busy} onClick={() => setChecked(true)}>Check answer</button>
           )}
         </>
       )}

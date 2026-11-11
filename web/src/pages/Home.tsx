@@ -14,15 +14,14 @@ export function HomePage() {
   return (
     <main className="screen">
       <p className="kicker">VinoSim</p>
-      <h1>A quieter way to learn wine.</h1>
-      <p className="lede">Short lessons, one question at a time, and a sommelier who will stay with the glass in front of you.</p>
-      {offline && <p className="banner">The local API is not responding.</p>}
+      <h1>Wine is better when you get it.</h1>
+      <p className="lede">A few minutes with the glass in front of you. One note, then one question.</p>
+      {offline && <p className="banner">The API is not responding.</p>}
       <div className="actions">
-        <Link className="btn" to="/quiz">Take a question</Link>
-        <Link className="btn secondary" to="/tutor">Ask the tutor</Link>
+        <Link className="btn" to="/quiz">Start exploring</Link>
+        <Link className="btn secondary" to="/tutor">Taste together</Link>
       </div>
       <div className="stack" style={{ marginTop: 28 }}>
-        <h2>From the reading table</h2>
         {articles.map((article) => (
           <Link key={article.id} className="article" to="/study">
             {article.image && <img src={article.image} alt="" />}
