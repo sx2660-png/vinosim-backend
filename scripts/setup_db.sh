@@ -31,6 +31,14 @@ echo ">> Applying schema..."
 psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 -f "${HERE}/sql/001_schema.sql"
 echo ">> Applying seed (quiz + articles)..."
 psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 -f "${HERE}/sql/002_seed.sql"
+echo ">> Applying photos + longer study notes..."
+psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 -f "${HERE}/sql/003_images_and_articles.sql"
+echo ">> Applying learner profile + article topics..."
+psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 -f "${HERE}/sql/004_learner_profile.sql"
+echo ">> Applying level question bank..."
+psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 -f "${HERE}/sql/005_level_question_bank.sql"
+echo ">> Applying exams, tasting sheets and medals..."
+psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 -f "${HERE}/sql/006_levels_and_medals.sql"
 
 # make sure the app role owns everything it needs
 psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 <<SQL

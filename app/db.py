@@ -132,19 +132,137 @@ def user_score(user_id: str) -> dict[str, int]:
     return {"correct": r[0] or 0, "total": r[1] or 0}
 
 
+# --- Learner profile (distilled after each tutor turn) ---
+
+def get_learner_profile(user_id: str) -> dict[str, Any] | None:
+    with cursor() as cur:
+        cur.execute(
+            """
+            SELECT weak_topics, mentioned_topics, summaries, updated_at
+            FROM learner_profiles WHERE user_id = %s
+            """,
+            (user_id,),
+        )
+        row = cur.fetchone()
+    if not row:
+        return None
+    updated = row[3]
+    return {
+        "user_id": user_id,
+        "weak_topics": row[0] or {},
+        "mentioned_topics": row[1] or {},
+        "summaries": row[2] or [],
+        "updated_at": updated.isoformat() if updated else "",
+    }
+
+
+def merge_learner_profile(
+    user_id: str,
+    *,
+    weak_topics: dict[str, int],
+    mentioned_topics: dict[str, int],
+    summary: str,
+    mode: str,
+    at: str,
+) -> None:
+    """Add this turn's topic counts to the stored profile. One transaction."""
+    import json
+
+    with pool().connection() as conn:
+        previous = conn.autocommit
+        conn.autocommit = False
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO learner_profiles (user_id) VALUES (%s)
+                    ON CONFLICT (user_id) DO NOTHING
+                    """,
+                    (user_id,),
+                )
+                cur.execute(
+                    """
+                    SELECT weak_topics, mentioned_topics, summaries
+                    FROM learner_profiles WHERE user_id = %s FOR UPDATE
+                    """,
+                    (user_id,),
+                )
+                row = cur.fetchone()
+                weak = {key: int(value) for key, value in dict(row[0] or {}).items()}
+                mentioned = {key: int(value) for key, value in dict(row[1] or {}).items()}
+                summaries = list(row[2] or [])
+                for key, inc in weak_topics.items():
+                    weak[key] = weak.get(key, 0) + int(inc)
+                for key, inc in mentioned_topics.items():
+                    mentioned[key] = mentioned.get(key, 0) + int(inc)
+                if summary:
+                    summaries.append({"at": at, "mode": mode, "summary": summary})
+                    summaries = summaries[-12:]
+                cur.execute(
+                    """
+                    UPDATE learner_profiles
+                    SET weak_topics = %s::jsonb,
+                        mentioned_topics = %s::jsonb,
+                        summaries = %s::jsonb,
+                        updated_at = now()
+                    WHERE user_id = %s
+                    """,
+                    (json.dumps(weak), json.dumps(mentioned), json.dumps(summaries), user_id),
+                )
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.autocommit = previous
+
+
+def _article_rank(topics: list[str], weak: dict, mentioned: dict) -> tuple[int, list[str]]:
+    score = 0
+    matched: list[str] = []
+    for topic in topics:
+        weak_count = int(weak.get(topic, 0) or 0)
+        mentioned_count = int(mentioned.get(topic, 0) or 0)
+        if weak_count or mentioned_count:
+            matched.append(topic)
+        score += 2 * weak_count + mentioned_count
+    matched.sort(key=lambda topic: (0 if int(weak.get(topic, 0) or 0) else 1, topic))
+    return score, matched
+
+
 # --- Articles (Flow 6) ---
 
-def list_articles(category: str | None = None) -> list[dict[str, Any]]:
+def list_articles(category: str | None = None, user_id: str | None = None) -> list[dict[str, Any]]:
+    profile = get_learner_profile(user_id) if user_id else None
+    weak = (profile or {}).get("weak_topics") or {}
+    mentioned = (profile or {}).get("mentioned_topics") or {}
     with cursor() as cur:
         if category:
             cur.execute(
-                "SELECT id, title, category, content, image FROM articles WHERE category = %s ORDER BY id",
+                """
+                SELECT id, title, category, content, image, topics
+                FROM articles WHERE category = %s ORDER BY id
+                """,
                 (category,),
             )
         else:
-            cur.execute("SELECT id, title, category, content, image FROM articles ORDER BY id")
+            cur.execute(
+                "SELECT id, title, category, content, image, topics FROM articles ORDER BY id"
+            )
         rows = cur.fetchall()
-    return [
-        {"id": r[0], "title": r[1], "category": r[2], "content": r[3], "image": r[4]}
-        for r in rows
-    ]
+    articles = []
+    for row in rows:
+        topics = list(row[5] or [])
+        score, matched = _article_rank(topics, weak, mentioned)
+        articles.append({
+            "id": row[0],
+            "title": row[1],
+            "category": row[2],
+            "content": row[3],
+            "image": row[4],
+            "topics": topics,
+            "match": matched,
+            "score": score,
+        })
+    articles.sort(key=lambda article: (-article["score"], article["id"]))
+    return articles

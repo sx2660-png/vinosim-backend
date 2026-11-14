@@ -12,10 +12,9 @@ Flow 6  Webhook Study           -> GET  /articles
 from __future__ import annotations
 
 import base64
-
 from pathlib import Path
 
-from fastapi import Body, FastAPI, HTTPException, UploadFile
+from fastapi import BackgroundTasks, Body, FastAPI, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -24,6 +23,7 @@ from pydantic import BaseModel, Field
 from . import db, llm
 from .config import settings
 from .graph.agent_graph import run_agent
+from .profile import distill_turn
 from .public_api import router as public_router
 from .schemas import AgentRequest, QuizSubmit, WineLabel
 
@@ -74,13 +74,22 @@ async def scan(file: UploadFile | None = None, image_base64: str | None = Body(d
 
 # --- Flow 2: AI agent (LangGraph) ---
 @app.post("/agent")
-def agent(req: AgentRequest):
+def agent(req: AgentRequest, background: BackgroundTasks):
     if req.mode not in ("correction", "roleplay"):
         raise HTTPException(400, "mode must be 'correction' or 'roleplay'")
     try:
-        return run_agent(req.user_id, req.mode, req.message)
+        result = run_agent(req.user_id, req.mode, req.message)
     except Exception as exc:
         raise _model_failure(exc) from exc
+    background.add_task(
+        distill_turn,
+        req.user_id,
+        req.mode,
+        req.message,
+        result.get("answer") or result.get("reply") or "",
+        result.get("retrieved_titles") or result.get("sources") or [],
+    )
+    return result
 
 
 @app.get("/agent/history")
@@ -148,8 +157,16 @@ async def label_decode(file: UploadFile | None = None, image_base64: str | None 
 
 # --- Flow 6: study articles ---
 @app.get("/articles")
-def articles(category: str | None = None):
-    return {"articles": db.list_articles(category)}
+def articles(category: str | None = None, user_id: str | None = None):
+    return {"articles": db.list_articles(category, user_id)}
+
+
+@app.get("/learner/profile")
+def learner_profile(user_id: str):
+    profile = db.get_learner_profile(user_id)
+    if profile:
+        return profile
+    return {"user_id": user_id, "weak_topics": {}, "mentioned_topics": {}, "summaries": []}
 
 
 # The web client lives in web/. Study and quiz images are root-relative `/media/...`
