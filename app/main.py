@@ -12,9 +12,12 @@ Flow 6  Webhook Study           -> GET  /articles
 from __future__ import annotations
 
 import base64
+from pathlib import Path
 
 from fastapi import BackgroundTasks, Body, FastAPI, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from . import db, llm
@@ -164,3 +167,24 @@ def learner_profile(user_id: str):
     if profile:
         return profile
     return {"user_id": user_id, "weak_topics": {}, "mentioned_topics": {}, "summaries": []}
+
+
+# The web client lives in web/. Study and quiz images are root-relative `/media/...`
+# paths, and the production build is served from this same process so one host is the app.
+_WEB_ROOT = Path(__file__).resolve().parents[1] / "web"
+_MEDIA_DIR = _WEB_ROOT / "public" / "media"
+_DIST_DIR = _WEB_ROOT / "dist"
+
+if _MEDIA_DIR.is_dir():
+    app.mount("/media", StaticFiles(directory=str(_MEDIA_DIR)), name="media")
+
+_ASSETS_DIR = _DIST_DIR / "assets"
+if _ASSETS_DIR.is_dir():
+    app.mount("/assets", StaticFiles(directory=str(_ASSETS_DIR)), name="web-assets")
+
+_INDEX = _DIST_DIR / "index.html"
+if _INDEX.is_file():
+
+    @app.get("/", include_in_schema=False)
+    def web_app():
+        return FileResponse(_INDEX)
