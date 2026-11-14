@@ -9,11 +9,12 @@ import json
 import random
 from typing import Any
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
 from . import db, llm
 from .graph.agent_graph import run_agent
+from .profile import distill_turn
 from .schemas import WineLabel
 
 router = APIRouter(prefix="/webhook")
@@ -175,13 +176,21 @@ async def wine_scan(data: UploadFile | None = File(default=None)):
 
 
 @router.post("/chat2")
-def chat2(body: WebhookChat):
+def chat2(body: WebhookChat, background: BackgroundTasks):
     mode = body.mode
     if mode not in ("correction", "roleplay"):
         raise HTTPException(400, "mode must be 'correction' or 'roleplay'")
     user_id = body.userId or body.user_id or "anon"
     result = run_agent(user_id, mode, body.message)
     reply = result.get("reply") or result.get("answer") or ""
+    background.add_task(
+        distill_turn,
+        user_id,
+        mode,
+        body.message,
+        reply,
+        result.get("retrieved_titles") or result.get("sources") or [],
+    )
     raw_character = result.get("character")
     if isinstance(raw_character, str) and raw_character:
         character = {"name": raw_character, "role": "Sommelier", "avatarSeed": "host"}
@@ -252,10 +261,10 @@ def quiz_submit(body: WebhookQuizSubmit):
 
 
 @router.get("/study/list")
-def study_list(category: str | None = None):
+def study_list(category: str | None = None, userId: str | None = None):
     if category in (None, "", "Comprehensive"):
         category = None
-    rows = db.list_articles(category)
+    rows = db.list_articles(category, userId)
     return [
         {
             "id": str(row["id"]),
@@ -263,6 +272,7 @@ def study_list(category: str | None = None):
             "category": row["category"],
             "content": row["content"],
             "image": row["image"] or "",
+            "match": row.get("match") or [],
         }
         for row in rows
     ]

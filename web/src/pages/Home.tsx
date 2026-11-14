@@ -22,12 +22,15 @@ export function HomePage() {
         <Link className="btn secondary" to="/tutor">Ask the tutor</Link>
       </div>
       <div className="stack" style={{ marginTop: 28 }}>
-        <h2>From the reading table</h2>
+        <h2>{articles.some((article) => article.match && article.match.length > 0) ? "For what you've been asking" : "From the reading table"}</h2>
         {articles.map((article) => (
           <Link key={article.id} className="article" to="/study">
             {article.image && <img src={article.image} alt="" />}
             <small>{article.category}</small>
             <strong>{article.title}</strong>
+            {article.match && article.match.length > 0 && (
+              <p className="quiet">Because you asked about {article.match.slice(0, 3).join(", ")}</p>
+            )}
             <p>{article.content.trim()}</p>
           </Link>
         ))}

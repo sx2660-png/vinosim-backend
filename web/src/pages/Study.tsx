@@ -49,6 +49,9 @@ export function StudyPage() {
             {article.image && <img src={article.image} alt="" />}
             <small>{article.category}</small>
             <strong>{article.title}</strong>
+            {article.match && article.match.length > 0 && (
+              <p className="quiet">Because you asked about {article.match.slice(0, 3).join(", ")}</p>
+            )}
             <p>{article.content.trim()}</p>
           </button>
         ))}

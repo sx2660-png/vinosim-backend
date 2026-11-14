@@ -41,6 +41,7 @@ export type Article = {
   category: string;
   content: string;
   image: string;
+  match?: string[];
 };
 
 export type QuizQuestion = {
@@ -89,8 +90,9 @@ export type AgentReply = {
 export type HistoryMessage = { role: string; content: string };
 
 export function getArticles(category?: string) {
-  const query = category ? `?category=${encodeURIComponent(category)}` : "";
-  return read<{ articles: Article[] }>(`/articles${query}`);
+  const params = new URLSearchParams({ user_id: userId() });
+  if (category) params.set("category", category);
+  return read<{ articles: Article[] }>(`/articles?${params}`);
 }
 
 export function getQuiz() {
