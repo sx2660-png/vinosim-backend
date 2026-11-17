@@ -9,6 +9,7 @@ class AgentState(TypedDict, total=False):
     user_id: str
     mode: str          # 'correction' | 'roleplay'
     message: str
+    step: str | None   # sheet line the learner is on: appearance | nose | palate | liking
     # working memory
     history: list[dict[str, str]]
     retrieved: list[dict[str, Any]]
