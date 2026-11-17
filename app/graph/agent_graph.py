@@ -21,17 +21,46 @@ from ..schemas import CorrectionResponse, RoleplayResponse
 from .state import AgentState
 
 CORRECTION_SYSTEM = (
-    "You are VinoSim, a warm, precise sommelier tutor for beginners. "
-    "Answer the user's (often vague) wine question using ONLY the provided knowledge snippets "
-    "as your factual basis. If the snippets do not cover it, say so honestly and give general "
-    "guidance without inventing specifics. Keep it approachable and jargon-light. "
+    "You are VinoSim, a warm tutor helping a beginner put words to a glass of wine. "
+    "Use ONLY the provided knowledge snippets as your factual basis; if they do not cover the "
+    "question, say so honestly and give general guidance without inventing specifics.\n"
+    "Rules:\n"
+    "- Smell, flavour and whether the learner likes the wine have no wrong answers. Never tell "
+    "them an aroma, flavour or preference is wrong. Acknowledge their words first, then offer "
+    "words other people often use (\"Many people describe that as ...; others say ...\").\n"
+    "- For structure (acidity, tannin, body, sweetness, alcohol), help link what they feel to one "
+    "word, say where in the mouth it is felt, and give one simple reason (for example, tannin "
+    "comes from grape skins and seeds, which is why red wines have more of it).\n"
+    "- Ask at most one question at a time. Keep it short and jargon-light.\n"
+    "- Never recommend wines to buy, mention prices, or hand the learner a line to memorize.\n"
+    "- Write plain text: no Markdown, asterisks or bullet symbols.\n"
     "List the titles of the snippets you actually used in `sources`."
 )
 
 ROLEPLAY_SYSTEM = (
-    "You are role-playing as a charismatic sommelier at a cozy wine bar, chatting with a guest. "
-    "Stay in character, be vivid and encouraging, and keep replies conversational."
+    "You are a friendly guest sitting next to the learner at a dinner where wine has just been "
+    "poured. Chat naturally and ask what they notice about the wine, so they can practise saying "
+    "a sentence or two about it in their own words. React with interest; if they use a word like "
+    "acidity, tannin or body, show you understood. Never say their impression is wrong. Do not "
+    "recommend wines, mention prices, or lecture. Keep replies to two or three sentences. "
+    "Write plain text without Markdown."
 )
+
+# Where the learner is on the four-line tasting sheet (scaffolding, one step at a time).
+STEP_GUIDE = {
+    "appearance": "The learner is on the APPEARANCE line: colour and how deep it looks.",
+    "nose": "The learner is on the NOSE line: what kinds of smells they notice. There is no wrong answer.",
+    "palate": (
+        "The learner is on the PALATE line: how it feels in the mouth. Help them tie one feeling to "
+        "a word (mouth-watering = acidity, drying gums = tannin, weight = body) and give one reason."
+    ),
+    "liking": "The learner is on the LAST line: whether they like it and why. There is no wrong answer.",
+}
+
+
+def _step_note(state: AgentState) -> str:
+    note = STEP_GUIDE.get(state.get("step") or "")
+    return f"\n\n({note} Help only with this line.)" if note else ""
 
 
 def load_history(state: AgentState) -> AgentState:
@@ -57,6 +86,7 @@ def correction_agent(state: AgentState) -> AgentState:
     user_message = (
         f"Knowledge snippets:\n{context}\n\n"
         f"User question: {state['message']}"
+        f"{_step_note(state)}"
     )
     result = llm.structured_chat(
         system=CORRECTION_SYSTEM,
@@ -73,7 +103,7 @@ def roleplay_agent(state: AgentState) -> AgentState:
     result = llm.structured_chat(
         system=ROLEPLAY_SYSTEM,
         history=state.get("history", []),
-        user_message=state["message"],
+        user_message=state["message"] + _step_note(state),
         schema=RoleplayResponse,
         temperature=0.8,
     )
@@ -111,7 +141,7 @@ def build_graph():
     return g.compile()
 
 
-def run_agent(user_id: str, mode: str, message: str) -> dict:
+def run_agent(user_id: str, mode: str, message: str, step: str | None = None) -> dict:
     graph = build_graph()
-    final = graph.invoke({"user_id": user_id, "mode": mode, "message": message})
+    final = graph.invoke({"user_id": user_id, "mode": mode, "message": message, "step": step})
     return final["response"]

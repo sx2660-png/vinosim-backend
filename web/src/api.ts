@@ -51,8 +51,11 @@ export type QuizQuestion = {
   id: number;
   question: string;
   options: string[];
-  category: string;
+  category?: string;
   image?: string;
+  app_level?: number;
+  item_type?: string;
+  sheet_line?: string;
 };
 
 export type QuizResult = {
@@ -60,6 +63,7 @@ export type QuizResult = {
   correct_answer: string;
   explanation: string;
   score: { correct: number; total: number };
+  new_medals?: string[];
 };
 
 export type WineLabel = {
@@ -82,7 +86,6 @@ export type LabelQuiz = {
 export type AgentReply = {
   answer?: string;
   reply?: string;
-  wine_recommendations?: string[];
   sources?: string[];
   confidence?: string;
   retrieved_titles?: string[];
@@ -98,8 +101,8 @@ export function getArticles(category?: string) {
   return read<{ articles: Article[] }>(`/articles?${params}`);
 }
 
-export function getQuiz() {
-  return read<QuizQuestion>("/quiz");
+export function getQuiz(level?: number) {
+  return read<QuizQuestion>(level ? `/quiz?level=${level}` : "/quiz");
 }
 
 export function submitQuiz(questionId: number, answer: string) {
@@ -110,11 +113,11 @@ export function submitQuiz(questionId: number, answer: string) {
   });
 }
 
-export function askSommelier(mode: "correction" | "roleplay", message: string) {
+export function askSommelier(mode: "correction" | "roleplay", message: string, step?: SheetLine) {
   return read<AgentReply>("/agent", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ user_id: userId(), mode, message }),
+    body: JSON.stringify({ user_id: userId(), mode, message, step: step ?? null }),
   });
 }
 
@@ -137,4 +140,111 @@ export function decodeLabel(file: File) {
 
 export function checkHealth() {
   return read<{ ok: boolean }>("/health");
+}
+
+// --- Levels, exams, tasting sheets, medals ---
+
+const json = (body: unknown): RequestInit => ({
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify(body),
+});
+
+export type SheetLine = "appearance" | "nose" | "palate" | "liking";
+
+export type ExamSummary = { score: number; total: number; passed: boolean; at: string } | null;
+
+export type Progress = {
+  level1: { exam: ExamSummary; sheets_complete: number; sheets_needed: number; medal: string | null };
+  level2: {
+    unlocked: boolean;
+    exam: ExamSummary;
+    labels_done: number;
+    labels_needed: number;
+    medal: string | null;
+  };
+  bonus: { status: string; articles: { id: number; title: string; read: boolean; medal: string | null }[] };
+  course_complete: boolean;
+  new_medals: string[];
+};
+
+export type ExamPaper = {
+  attempt_id: number;
+  level: number;
+  pass_pct: number;
+  time_limit_min: number | null;
+  questions: QuizQuestion[];
+};
+
+export type ExamResult = {
+  level: number;
+  score: number;
+  total: number;
+  pass_pct: number;
+  passed: boolean;
+  review: { id: number; given: string; correct_answer: string; correct: boolean; explanation: string }[];
+  new_medals: string[];
+};
+
+export type Sheet = {
+  id: number;
+  wine_name: string;
+  appearance: string;
+  nose: string;
+  palate: string;
+  palate_because: string;
+  liking: string;
+  structure_words: string[];
+  complete: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SheetDraft = Omit<Sheet, "id" | "structure_words" | "complete" | "created_at" | "updated_at"> & {
+  id?: number;
+};
+
+export type BonusArticle = { id: number; title: string; content: string; image: string; read: boolean };
+
+export type TastingPrompt = { id: number; sheet_line: string; prompt: string; examples: string[]; guidance: string };
+
+export function getProgress() {
+  return read<Progress>(`/progress?user_id=${encodeURIComponent(userId())}`);
+}
+
+export function startExam(level: number) {
+  return read<ExamPaper>("/exam/start", json({ user_id: userId(), level }));
+}
+
+export function submitExam(attemptId: number, answers: Record<string, string>) {
+  return read<ExamResult>("/exam/submit", json({ user_id: userId(), attempt_id: attemptId, answers }));
+}
+
+export function getSheets() {
+  return read<{ sheets: Sheet[] }>(`/sheets?user_id=${encodeURIComponent(userId())}`);
+}
+
+export function saveSheet(draft: SheetDraft) {
+  return read<{ sheet: Sheet; missing: string[]; new_medals: string[] }>(
+    "/sheets",
+    json({ user_id: userId(), ...draft }),
+  );
+}
+
+export function getLabelTasks() {
+  return read<{ needed: number; done: number; tasks: (QuizQuestion & { done: boolean })[] }>(
+    `/labels/tasks?user_id=${encodeURIComponent(userId())}`,
+  );
+}
+
+export function getBonus() {
+  return read<{ status: string; articles: BonusArticle[] }>(`/bonus?user_id=${encodeURIComponent(userId())}`);
+}
+
+export function markBonusRead(articleId: number) {
+  return read<{ ok: boolean; new_medals: string[] }>("/bonus/read", json({ user_id: userId(), article_id: articleId }));
+}
+
+export function getPrompts(line?: SheetLine) {
+  return read<{ prompts: TastingPrompt[] }>(line ? `/prompts?line=${line}` : "/prompts");
 }

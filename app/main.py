@@ -23,6 +23,8 @@ from pydantic import BaseModel, Field
 from . import db, llm
 from .config import settings
 from .graph.agent_graph import run_agent
+from .levels import progress as level_progress
+from .levels import router as levels_router
 from .profile import distill_turn
 from .public_api import router as public_router
 from .schemas import AgentRequest, QuizSubmit, WineLabel
@@ -35,6 +37,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(public_router)
+app.include_router(levels_router)
 
 LABEL_PROMPT = (
     "Read this wine label and extract the fields. Leave a field blank if it is not legible. "
@@ -78,7 +81,7 @@ def agent(req: AgentRequest, background: BackgroundTasks):
     if req.mode not in ("correction", "roleplay"):
         raise HTTPException(400, "mode must be 'correction' or 'roleplay'")
     try:
-        result = run_agent(req.user_id, req.mode, req.message)
+        result = run_agent(req.user_id, req.mode, req.message, step=req.step)
     except Exception as exc:
         raise _model_failure(exc) from exc
     background.add_task(
@@ -101,8 +104,8 @@ def agent_history(user_id: str, mode: str = "correction"):
 
 # --- Flow 3: get a random quiz question ---
 @app.get("/quiz")
-def quiz():
-    q = db.random_question()
+def quiz(level: int | None = None, item_type: str | None = None):
+    q = db.random_question(level, item_type)
     if not q:
         raise HTTPException(404, "No questions seeded.")
     return q
@@ -116,12 +119,17 @@ def quiz_submit(sub: QuizSubmit):
         raise HTTPException(404, "Unknown question_id.")
     is_correct = sub.answer.strip().upper() == q["correct_answer"].strip().upper()
     db.save_quiz_attempt(sub.user_id, sub.question_id, sub.answer, is_correct)
+    new_medals: list[str] = []
+    if q["item_type"] == "label":
+        db.record_label_task(sub.user_id, f"q{sub.question_id}", is_correct)
+        new_medals = level_progress(sub.user_id)["new_medals"]
     score = db.user_score(sub.user_id)
     return {
         "correct": is_correct,
         "correct_answer": q["correct_answer"],
         "explanation": q["explanation"],
         "score": score,
+        "new_medals": new_medals,
     }
 
 

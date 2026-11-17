@@ -89,27 +89,40 @@ def similarity_search(query_embedding: list[float], k: int) -> list[dict[str, An
 
 # --- Quiz (Flow 3 & 4) ---
 
-def random_question() -> dict[str, Any] | None:
+def random_question(level: int | None = None, item_type: str | None = None) -> dict[str, Any] | None:
+    where, params = [], []
+    if level is not None:
+        where.append("app_level = %s")
+        params.append(level)
+    if item_type:
+        where.append("item_type = %s")
+        params.append(item_type)
+    clause = f"WHERE {' AND '.join(where)}" if where else ""
     with cursor() as cur:
         cur.execute(
-            "SELECT id, question, options, category, image FROM quiz_questions ORDER BY random() LIMIT 1"
+            f"""SELECT id, question, options, category, image, app_level, item_type, sheet_line
+                FROM quiz_questions {clause} ORDER BY random() LIMIT 1""",
+            params,
         )
         r = cur.fetchone()
     if not r:
         return None
-    return {"id": r[0], "question": r[1], "options": r[2], "category": r[3], "image": r[4] or ""}
+    return {
+        "id": r[0], "question": r[1], "options": r[2], "category": r[3], "image": r[4] or "",
+        "app_level": r[5], "item_type": r[6], "sheet_line": r[7],
+    }
 
 
 def get_question(question_id: int) -> dict[str, Any] | None:
     with cursor() as cur:
         cur.execute(
-            "SELECT id, correct_answer, explanation FROM quiz_questions WHERE id = %s",
+            "SELECT id, correct_answer, explanation, item_type FROM quiz_questions WHERE id = %s",
             (question_id,),
         )
         r = cur.fetchone()
     if not r:
         return None
-    return {"id": r[0], "correct_answer": r[1], "explanation": r[2]}
+    return {"id": r[0], "correct_answer": r[1], "explanation": r[2], "item_type": r[3]}
 
 
 def save_quiz_attempt(user_id: str, question_id: int, user_answer: str, is_correct: bool) -> None:
@@ -266,3 +279,244 @@ def list_articles(category: str | None = None, user_id: str | None = None) -> li
         })
     articles.sort(key=lambda article: (-article["score"], article["id"]))
     return articles
+
+
+# --- Level exams (sql/005, 006, 007) ---
+
+def level_exam_config(level: int) -> dict[str, Any] | None:
+    with cursor() as cur:
+        cur.execute(
+            "SELECT question_count, pass_pct, time_limit_min FROM level_exams WHERE app_level = %s",
+            (level,),
+        )
+        r = cur.fetchone()
+    if not r:
+        return None
+    return {"question_count": r[0], "pass_pct": r[1], "time_limit_min": r[2]}
+
+
+def exam_pool(level: int) -> list[tuple[int, str]]:
+    """(id, wset_ref) of every question that may appear in this level's exam."""
+    with cursor() as cur:
+        cur.execute(
+            "SELECT id, wset_ref FROM quiz_questions WHERE app_level = %s AND exam_eligible",
+            (level,),
+        )
+        return [(r[0], r[1] or "") for r in cur.fetchall()]
+
+
+def questions_for_learner(ids: list[int]) -> list[dict[str, Any]]:
+    """Questions without answers, in the order given."""
+    with cursor() as cur:
+        cur.execute(
+            "SELECT id, question, options, image FROM quiz_questions WHERE id = ANY(%s)",
+            (ids,),
+        )
+        found = {r[0]: {"id": r[0], "question": r[1], "options": r[2], "image": r[3] or ""}
+                 for r in cur.fetchall()}
+    return [found[i] for i in ids if i in found]
+
+
+def answer_key(ids: list[int]) -> dict[int, dict[str, str]]:
+    with cursor() as cur:
+        cur.execute(
+            "SELECT id, correct_answer, explanation FROM quiz_questions WHERE id = ANY(%s)",
+            (ids,),
+        )
+        return {r[0]: {"correct_answer": r[1], "explanation": r[2]} for r in cur.fetchall()}
+
+
+def create_exam_attempt(user_id: str, level: int, question_ids: list[int]) -> int:
+    with cursor() as cur:
+        cur.execute(
+            """INSERT INTO exam_attempts (user_id, app_level, question_ids, total)
+               VALUES (%s, %s, %s, %s) RETURNING id""",
+            (user_id, level, question_ids, len(question_ids)),
+        )
+        return cur.fetchone()[0]
+
+
+def get_exam_attempt(attempt_id: int) -> dict[str, Any] | None:
+    with cursor() as cur:
+        cur.execute(
+            """SELECT id, user_id, app_level, question_ids, total, submitted_at
+               FROM exam_attempts WHERE id = %s""",
+            (attempt_id,),
+        )
+        r = cur.fetchone()
+    if not r:
+        return None
+    return {"id": r[0], "user_id": r[1], "app_level": r[2], "question_ids": list(r[3]),
+            "total": r[4], "submitted": r[5] is not None}
+
+
+def finish_exam_attempt(attempt_id: int, answers: dict[str, str], score: int, passed: bool) -> None:
+    import json
+
+    with cursor() as cur:
+        cur.execute(
+            """UPDATE exam_attempts
+               SET answers = %s::jsonb, score = %s, passed = %s, submitted_at = now()
+               WHERE id = %s""",
+            (json.dumps(answers), score, passed, attempt_id),
+        )
+
+
+def best_exam(user_id: str, level: int) -> dict[str, Any] | None:
+    with cursor() as cur:
+        cur.execute(
+            """SELECT score, total, passed, submitted_at FROM exam_attempts
+               WHERE user_id = %s AND app_level = %s AND submitted_at IS NOT NULL
+               ORDER BY passed DESC, score DESC, submitted_at DESC LIMIT 1""",
+            (user_id, level),
+        )
+        r = cur.fetchone()
+    if not r:
+        return None
+    return {"score": r[0], "total": r[1], "passed": bool(r[2]), "at": r[3].isoformat()}
+
+
+# --- Tasting sheets ---
+
+_SHEET_COLS = ("wine_name", "appearance", "nose", "palate", "palate_because", "liking")
+
+
+def _sheet_row(r) -> dict[str, Any]:
+    return {
+        "id": r[0], "wine_name": r[1], "appearance": r[2], "nose": r[3], "palate": r[4],
+        "palate_because": r[5], "liking": r[6], "structure_words": list(r[7] or []),
+        "complete": bool(r[8]), "created_at": r[9].isoformat(), "updated_at": r[10].isoformat(),
+    }
+
+
+_SHEET_SELECT = """SELECT id, wine_name, appearance, nose, palate, palate_because, liking,
+                          structure_words, complete, created_at, updated_at FROM tasting_sheets"""
+
+
+def save_sheet(user_id: str, sheet_id: int | None, fields: dict[str, str],
+               structure_words: list[str], complete: bool) -> dict[str, Any] | None:
+    values = [fields.get(c, "") for c in _SHEET_COLS]
+    with cursor() as cur:
+        if sheet_id is None:
+            cur.execute(
+                f"""INSERT INTO tasting_sheets (user_id, {', '.join(_SHEET_COLS)}, structure_words, complete)
+                    VALUES (%s, {', '.join(['%s'] * len(_SHEET_COLS))}, %s, %s) RETURNING id""",
+                (user_id, *values, structure_words, complete),
+            )
+            sheet_id = cur.fetchone()[0]
+        else:
+            cur.execute(
+                f"""UPDATE tasting_sheets SET {', '.join(f'{c} = %s' for c in _SHEET_COLS)},
+                        structure_words = %s, complete = %s, updated_at = now()
+                    WHERE id = %s AND user_id = %s RETURNING id""",
+                (*values, structure_words, complete, sheet_id, user_id),
+            )
+            if cur.fetchone() is None:
+                return None
+        cur.execute(f"{_SHEET_SELECT} WHERE id = %s", (sheet_id,))
+        return _sheet_row(cur.fetchone())
+
+
+def list_sheets(user_id: str) -> list[dict[str, Any]]:
+    with cursor() as cur:
+        cur.execute(f"{_SHEET_SELECT} WHERE user_id = %s ORDER BY created_at DESC", (user_id,))
+        return [_sheet_row(r) for r in cur.fetchall()]
+
+
+def count_complete_sheets(user_id: str) -> int:
+    with cursor() as cur:
+        cur.execute("SELECT count(*) FROM tasting_sheets WHERE user_id = %s AND complete", (user_id,))
+        return cur.fetchone()[0]
+
+
+# --- Label tasks (Level 2 medal) ---
+
+def record_label_task(user_id: str, task_id: str, correct: bool) -> None:
+    with cursor() as cur:
+        cur.execute(
+            "INSERT INTO label_task_attempts (user_id, task_id, correct) VALUES (%s, %s, %s)",
+            (user_id, task_id, correct),
+        )
+
+
+def label_tasks_done(user_id: str) -> set[str]:
+    with cursor() as cur:
+        cur.execute(
+            "SELECT DISTINCT task_id FROM label_task_attempts WHERE user_id = %s AND correct",
+            (user_id,),
+        )
+        return {r[0] for r in cur.fetchall()}
+
+
+def label_questions() -> list[dict[str, Any]]:
+    with cursor() as cur:
+        cur.execute(
+            """SELECT id, question, options, image FROM quiz_questions
+               WHERE item_type = 'label' ORDER BY (image = '') , id"""
+        )
+        return [{"id": r[0], "question": r[1], "options": r[2], "image": r[3] or ""}
+                for r in cur.fetchall()]
+
+
+# --- Medals ---
+
+def award_medal(user_id: str, medal_id: str) -> bool:
+    """True if this call awarded it (first time)."""
+    with cursor() as cur:
+        cur.execute(
+            """INSERT INTO medals (user_id, medal_id) VALUES (%s, %s)
+               ON CONFLICT DO NOTHING RETURNING medal_id""",
+            (user_id, medal_id),
+        )
+        return cur.fetchone() is not None
+
+
+def list_medals(user_id: str) -> dict[str, str]:
+    with cursor() as cur:
+        cur.execute("SELECT medal_id, awarded_at FROM medals WHERE user_id = %s", (user_id,))
+        return {r[0]: r[1].isoformat() for r in cur.fetchall()}
+
+
+# --- Bonus reading (ungraded) ---
+
+def bonus_articles(user_id: str) -> list[dict[str, Any]]:
+    with cursor() as cur:
+        cur.execute(
+            """SELECT a.id, a.title, a.content, a.image, (b.user_id IS NOT NULL) AS read
+               FROM articles a
+               LEFT JOIN bonus_reads b ON b.article_id = a.id AND b.user_id = %s
+               WHERE a.category = 'Bonus' ORDER BY a.id""",
+            (user_id,),
+        )
+        return [{"id": r[0], "title": r[1], "content": r[2], "image": r[3] or "", "read": r[4]}
+                for r in cur.fetchall()]
+
+
+def mark_bonus_read(user_id: str, article_id: int) -> bool:
+    with cursor() as cur:
+        cur.execute("SELECT 1 FROM articles WHERE id = %s AND category = 'Bonus'", (article_id,))
+        if cur.fetchone() is None:
+            return False
+        cur.execute(
+            "INSERT INTO bonus_reads (user_id, article_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
+            (user_id, article_id),
+        )
+        return True
+
+
+# --- Open, ungraded tasting prompts ---
+
+def tasting_prompts(sheet_line: str | None = None) -> list[dict[str, Any]]:
+    with cursor() as cur:
+        if sheet_line:
+            cur.execute(
+                """SELECT id, sheet_line, prompt, example_answers, guidance FROM tasting_prompts
+                   WHERE sheet_line = %s ORDER BY id""",
+                (sheet_line,),
+            )
+        else:
+            cur.execute(
+                "SELECT id, sheet_line, prompt, example_answers, guidance FROM tasting_prompts ORDER BY id"
+            )
+        return [{"id": r[0], "sheet_line": r[1], "prompt": r[2], "examples": r[3] or [],
+                 "guidance": r[4] or ""} for r in cur.fetchall()]

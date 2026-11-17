@@ -15,6 +15,12 @@ export default defineConfig({
       "/scan": LOCAL_API,
       "/label": LOCAL_API,
       "/webhook": LOCAL_API,
+      "/progress": LOCAL_API,
+      "/exam": LOCAL_API,
+      "/sheets": LOCAL_API,
+      "/labels": LOCAL_API,
+      "/bonus": LOCAL_API,
+      "/prompts": LOCAL_API,
     },
   },
 });

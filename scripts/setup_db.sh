@@ -39,6 +39,8 @@ echo ">> Applying level question bank..."
 psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 -f "${HERE}/sql/005_level_question_bank.sql"
 echo ">> Applying exams, tasting sheets and medals..."
 psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 -f "${HERE}/sql/006_levels_and_medals.sql"
+echo ">> Applying exam eligibility..."
+psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 -f "${HERE}/sql/007_exam_eligibility.sql"
 
 # make sure the app role owns everything it needs
 psql -d "${DB_NAME}" -v ON_ERROR_STOP=1 <<SQL

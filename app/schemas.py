@@ -17,8 +17,7 @@ class WineLabel(BaseModel):
 
 # --- Flow 2: agent (structured outputs) ---
 class CorrectionResponse(BaseModel):
-    answer: str = Field(description="Grounded sommelier answer for a beginner")
-    wine_recommendations: list[str] = Field(default_factory=list)
+    answer: str = Field(description="Grounded tutor answer for a beginner")
     sources: list[str] = Field(
         default_factory=list, description="Titles of knowledge docs the answer relied on"
     )
@@ -26,8 +25,8 @@ class CorrectionResponse(BaseModel):
 
 
 class RoleplayResponse(BaseModel):
-    reply: str = Field(description="In-character sommelier reply")
-    character: str = Field(default="Sommelier")
+    reply: str = Field(description="In-character reply from a fellow dinner guest")
+    character: str = Field(default="Dinner guest")
     emotion: str = Field(default="warm")
 
 
@@ -35,6 +34,37 @@ class AgentRequest(BaseModel):
     user_id: str
     mode: str = Field(description="'correction' or 'roleplay'")
     message: str
+    step: str | None = Field(
+        default=None, description="Sheet line the learner is on: appearance | nose | palate | liking"
+    )
+
+
+# --- Levels: exams, tasting sheets, bonus ---
+class ExamStart(BaseModel):
+    user_id: str
+    level: int = Field(ge=1, le=2)
+
+
+class ExamSubmit(BaseModel):
+    user_id: str
+    attempt_id: int
+    answers: dict[str, str] = Field(description='{"<question_id>": "B", ...}')
+
+
+class SheetIn(BaseModel):
+    user_id: str
+    id: int | None = None
+    wine_name: str = ""
+    appearance: str = ""
+    nose: str = ""
+    palate: str = ""
+    palate_because: str = ""
+    liking: str = ""
+
+
+class BonusRead(BaseModel):
+    user_id: str
+    article_id: int
 
 
 # --- Flow 4: quiz submit ---

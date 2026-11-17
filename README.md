@@ -81,7 +81,7 @@ curl -s localhost:8000/agent -H 'content-type: application/json' -d '{
 
 # roleplay agent (no retrieval)
 curl -s localhost:8000/agent -H 'content-type: application/json' -d '{
-  "user_id":"u1","mode":"roleplay","message":"recommend me something fun tonight"}' | jq
+  "user_id":"u1","mode":"roleplay","message":"this red feels a bit drying on my gums"}' | jq
 
 # quiz
 curl -s localhost:8000/quiz | jq
