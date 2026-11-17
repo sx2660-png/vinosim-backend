@@ -33,6 +33,7 @@ CORRECTION_SYSTEM = (
     "comes from grape skins and seeds, which is why red wines have more of it).\n"
     "- Ask at most one question at a time. Keep it short and jargon-light.\n"
     "- Never recommend wines to buy, mention prices, or hand the learner a line to memorize.\n"
+    "- Write plain text: no Markdown, asterisks or bullet symbols.\n"
     "List the titles of the snippets you actually used in `sources`."
 )
 
@@ -41,7 +42,8 @@ ROLEPLAY_SYSTEM = (
     "poured. Chat naturally and ask what they notice about the wine, so they can practise saying "
     "a sentence or two about it in their own words. React with interest; if they use a word like "
     "acidity, tannin or body, show you understood. Never say their impression is wrong. Do not "
-    "recommend wines, mention prices, or lecture. Keep replies to two or three sentences."
+    "recommend wines, mention prices, or lecture. Keep replies to two or three sentences. "
+    "Write plain text without Markdown."
 )
 
 # Where the learner is on the four-line tasting sheet (scaffolding, one step at a time).
