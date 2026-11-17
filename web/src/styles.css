@@ -318,3 +318,92 @@ a.article {
     border-right: 1px solid #d8cdbf;
   }
 }
+
+/* --- Levels, medals, tasting sheet --- */
+
+.tabs.small { margin-top: -6px; }
+.tabs.small .tab { min-height: 36px; padding: 6px 12px; font-size: 14px; }
+
+.bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; margin: 6px 0 4px; }
+.bar i { display: block; height: 100%; background: var(--wine); border-radius: inherit; }
+
+.medal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-weight: 650;
+  font-size: 14px;
+  flex: 0 0 auto;
+}
+.medal.on { border: 0; background: var(--wine); color: #fffaf4; }
+.medal.small { height: 26px; min-width: 0; font-size: 12px; }
+
+a.path-card { display: block; margin-top: 18px; color: inherit; text-decoration: none; }
+.path-row { display: flex; gap: 12px; align-items: center; margin-top: 10px; }
+.path-row strong { font-size: 16px; }
+.path-row p { margin: 2px 0 0; }
+
+.level h2 { margin-top: 6px; font-size: 24px; }
+.level.locked { opacity: 0.7; }
+
+.toast {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  max-width: 388px;
+  margin: 0 auto;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--wine);
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(36, 25, 19, 0.18);
+  z-index: 10;
+}
+.toast p { margin: 4px 0 0; color: var(--muted); }
+
+.sheet { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; flex: 0 0 auto; }
+.sheet strong { font-size: 16px; }
+.steps { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.steps::-webkit-scrollbar { display: none; }
+.step {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.step.active { background: var(--wine); border-color: var(--wine); color: #fffaf4; }
+.step.done { color: var(--ok); border-color: var(--ok); }
+.sheet-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: #fff;
+  resize: none;
+}
+.sheet .banner p { margin: 2px 0; color: inherit; }
+.sheet-actions { justify-content: space-between; }
+.sheet-actions .btn { min-height: 40px; padding: 8px 14px; }
+
+.word-card small { display: block; margin-top: 8px; }
+.word-card small:first-child { margin-top: 0; }
+.word-card strong { font-family: Fraunces, serif; font-size: 22px; color: var(--wine-deep); }
+
+.exam-q strong { margin-top: 4px; font-size: 17px; }
+
+.gate { display: flex; flex-direction: column; justify-content: center; }
+.gate-note { margin-top: 18px; color: var(--muted); line-height: 1.45; }
+
+/* With the sheet open the screen scrolls, and the thread keeps a readable window. */
+.chat-screen.with-sheet { overflow-y: auto; }
+.chat-screen.with-sheet .thread { flex: 0 0 auto; min-height: 160px; max-height: 38dvh; }

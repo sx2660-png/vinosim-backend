@@ -1,4 +1,6 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Sheet, getSheets } from "../api";
 import { CellarWine, loadCellar, saveCellar } from "../cellar";
 
 const empty = { name: "", grape: "", region: "", year: "", notes: "", rating: 3 };
@@ -7,6 +9,11 @@ export function CellarPage() {
   const [wines, setWines] = useState<CellarWine[]>(() => loadCellar());
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState(empty);
+  const [sheets, setSheets] = useState<Sheet[]>([]);
+
+  useEffect(() => {
+    getSheets().then((data) => setSheets(data.sheets)).catch(() => setSheets([]));
+  }, []);
 
   function persist(next: CellarWine[]) {
     setWines(next);
@@ -66,8 +73,28 @@ export function CellarPage() {
   return (
     <main className="screen">
       <p className="kicker">Cellar</p>
-      <h1>Bottles you kept.</h1>
-      <p className="lede">Stored on this device. Scanning a label can drop one in here.</p>
+      <h1>Your tastings.</h1>
+      <p className="lede">Your tasting sheets, and the bottles you kept.</p>
+      <h2 style={{ marginTop: 20 }}>Tasting sheets</h2>
+      <div className="stack" style={{ marginTop: 10 }}>
+        {sheets.length === 0 && (
+          <p className="quiet">No sheets yet. <Link to="/tutor">Write one in Tutor.</Link></p>
+        )}
+        {sheets.map((sheet) => (
+          <article key={sheet.id} className="wine">
+            <div className="row" style={{ justifyContent: "space-between" }}>
+              <strong>{sheet.wine_name || "A glass of wine"}</strong>
+              <span className={sheet.complete ? "medal on small" : "medal small"}>{sheet.complete ? "Complete" : "Draft"}</span>
+            </div>
+            {[["Looks", sheet.appearance], ["Smells", sheet.nose], ["Feels", [sheet.palate, sheet.palate_because && `because ${sheet.palate_because}`].filter(Boolean).join(", ")], ["Like it?", sheet.liking]]
+              .filter(([, text]) => text)
+              .map(([name, text]) => <p key={name}><b>{name.endsWith("?") ? name : `${name}:`}</b> {text}</p>)}
+            <p className="quiet">{sheet.created_at.slice(0, 10)}</p>
+          </article>
+        ))}
+      </div>
+      <h2 style={{ marginTop: 24 }}>Bottles</h2>
+      <p className="quiet">Stored on this device. Scanning a label can drop one in here.</p>
       <button className="btn" style={{ margin: "16px 0" }} onClick={() => setAdding(true)}>Add a bottle</button>
       <div className="stack">
         {wines.length === 0 && <p className="quiet">The cellar is empty.</p>}

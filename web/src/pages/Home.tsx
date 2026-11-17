@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Article, checkHealth, getArticles } from "../api";
+import { LevelsPanel } from "./Levels";
 
 export function HomePage() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -8,7 +9,7 @@ export function HomePage() {
 
   useEffect(() => {
     checkHealth().then(() => setOffline(false)).catch(() => setOffline(true));
-    getArticles().then((data) => setArticles(data.articles.slice(0, 3))).catch(() => setArticles([]));
+    getArticles().then((data) => setArticles(data.articles.filter((a) => a.category !== "Bonus").slice(0, 3))).catch(() => setArticles([]));
   }, []);
 
   return (
@@ -17,6 +18,7 @@ export function HomePage() {
       <h1>A quieter way to learn wine.</h1>
       <p className="lede">Short lessons, one question at a time, and a sommelier who will stay with the glass in front of you.</p>
       {offline && <p className="banner">The local API is not responding.</p>}
+      {!offline && <LevelsPanel />}
       <div className="actions">
         <Link className="btn" to="/quiz">Take a question</Link>
         <Link className="btn secondary" to="/tutor">Ask the tutor</Link>
