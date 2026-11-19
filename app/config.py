@@ -39,4 +39,9 @@ def gemini_client():
 
     if not settings.gemini_api_key:
         raise RuntimeError("GEMINI_API_KEY is not set. Copy .env.example to .env and fill it in.")
-    return genai.Client(api_key=settings.gemini_api_key)
+    # Pin v1beta: system instructions and structured output are not enabled on v1,
+    # and newer SDK releases may pick v1 by default for some key types.
+    return genai.Client(
+        api_key=settings.gemini_api_key,
+        http_options=genai.types.HttpOptions(api_version="v1beta"),
+    )
