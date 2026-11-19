@@ -12,6 +12,7 @@ Flow 6  Webhook Study           -> GET  /articles
 from __future__ import annotations
 
 import base64
+import logging
 from pathlib import Path
 
 from fastapi import BackgroundTasks, Body, FastAPI, HTTPException, UploadFile
@@ -45,10 +46,23 @@ LABEL_PROMPT = (
 )
 
 
+log = logging.getLogger("vinosim")
+
+
 def _model_failure(exc: Exception) -> HTTPException:
+    # Keep the real reason in the server log; the client gets a short, safe message.
+    log.exception("Model request failed: %s", type(exc).__name__)
     text = str(exc)
     if "API key not valid" in text or "API_KEY_INVALID" in text:
         return HTTPException(502, "Gemini rejected the API key configured on this server.")
+    if "GEMINI_API_KEY is not set" in text:
+        return HTTPException(502, "No Gemini API key is configured on this server.")
+    if "RESOURCE_EXHAUSTED" in text or "429" in text or "quota" in text.lower():
+        return HTTPException(503, "The Gemini quota for this server is used up. Try again later.")
+    if "PERMISSION_DENIED" in text or "403" in text:
+        return HTTPException(502, "Gemini refused this server's API key (permission denied).")
+    if "not found" in text.lower() and "model" in text.lower():
+        return HTTPException(502, "The Gemini model configured on this server is not available.")
     return HTTPException(502, "The model request failed.")
 
 
