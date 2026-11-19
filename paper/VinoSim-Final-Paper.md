@@ -277,13 +277,13 @@ For this semester: complete Level 1 and Level 2 in the app, front end and back e
 
 ### Learning Goals
 
-Level 1, "Talk about the glass":
+Level 1, "Foundations of Tasting":
 
 1. **LO1.** Know what acidity, tannin, and body feel like, and one cause of each. Assessed by the Level 1 exam.
 2. **LO2.** Describe a wine by appearance, nose, and palate, then say whether you like it and why. Assessed by the tasting sheet and tutor feedback. Aroma and liking are never judged right or wrong. A sheet counts as complete when all four lines are written in the learner's own words and the palate line uses at least one structure word (acidity, tannin, body, sweetness, or alcohol) together with the sensation it refers to, for example "my gums feel tight, so I think tannin."
 3. **LO3.** Understand others who use these words, and respond. Future work.
 
-Level 2, "Read the bottle":
+Level 2, "Grapes, Regions and Labels":
 
 1. Read a label: origin, grape, and classification terms such as AOC and DOCG.
 2. Know the typical styles of the principal grapes and regions.
@@ -427,7 +427,7 @@ VinoSim has five main screens (Home, Quiz, Study, Tutor, and Cellar), organized 
 
 *Status: in development (11/14–11/18).*
 
-The app is organized into two levels. Level 1, "Talk about the glass," covers the structural words and the tasting sheet, mirroring the scope of WSET Level 1. Level 2, "Read the bottle," covers labels, grape and regional styles, sparkling and fortified wines, and service, mirroring the scope of WSET Level 2. Completing both levels completes the course. Learners who want a recognized certificate are pointed to WSET Level 1.
+The app is organized into two levels. Level 1, "Foundations of Tasting," covers the structural words and the tasting sheet, mirroring the scope of WSET Level 1. Level 2, "Grapes, Regions and Labels," covers labels, grape and regional styles, sparkling and fortified wines, and service, mirroring the scope of WSET Level 2. Completing both levels completes the course. Learners who want a recognized certificate are pointed to WSET Level 1.
 
 Medals take the place of a certificate. They exist only inside the app and are not branded as WSET. The Level 1 medal requires passing the Level 1 exam and completing six tasting sheets, which mirrors the six recommended tasting samples in WSET Level 1 (WSET, 2022), and it unlocks Level 2. The Level 2 medal requires passing the Level 2 exam and completing five label-reading tasks. Optional bonus medals cover ungraded interest content in the direction of WSET Levels 3 and 4, such as terroir, ageing, and more regions; this part is still being refined. [[TO ADD: list of bonus topics once decided]]
 

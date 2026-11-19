@@ -42,14 +42,14 @@ export function LevelsPanel() {
       <div className="path-row">
         <span className={level1.medal ? "medal on" : "medal"}>1</span>
         <div>
-          <strong>Talk about the glass</strong>
+          <strong>Foundations of Tasting</strong>
           <p>{level1.sheets_complete}/{level1.sheets_needed} sheets · {level1.exam?.passed ? "exam passed" : "exam to do"}</p>
         </div>
       </div>
       <div className="path-row">
         <span className={level2.medal ? "medal on" : "medal"}>2</span>
         <div>
-          <strong>Read the bottle</strong>
+          <strong>Grapes, Regions and Labels</strong>
           <p>
             {level2.unlocked
               ? `${level2.labels_done}/${level2.labels_needed} labels · ${level2.exam?.passed ? "exam passed" : "exam to do"}`
@@ -79,7 +79,7 @@ export function LevelsPage() {
               <small className="meta">Level 1</small>
               {progress.level1.medal && <span className="medal on">Medal</span>}
             </div>
-            <h2>Talk about the glass</h2>
+            <h2>Foundations of Tasting</h2>
             <p>Describe a wine in your own words: how it looks, smells and feels, and whether you like it.</p>
             <p className="quiet">Tasting sheets: {progress.level1.sheets_complete}/{progress.level1.sheets_needed}</p>
             <Bar value={progress.level1.sheets_complete} max={progress.level1.sheets_needed} />
@@ -95,7 +95,7 @@ export function LevelsPage() {
               <small className="meta">Level 2</small>
               {progress.level2.medal && <span className="medal on">Medal</span>}
             </div>
-            <h2>Read the bottle</h2>
+            <h2>Grapes, Regions and Labels</h2>
             <p>Labels, grapes and regions, sparkling and fortified wines, serving and food.</p>
             {progress.level2.unlocked ? (
               <>
