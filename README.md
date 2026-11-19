@@ -15,6 +15,22 @@ vision stay on **Google Gemini**, and the vector store is a local **Postgres + p
 | Flow 5 · Label decoder | `POST /label/decode` | Gemini Vision → generated quiz |
 | Flow 6 · Articles | `GET /articles` | list from Postgres |
 
+### Levels and medals (added November 2026)
+
+Two app levels modelled on WSET Level 1 and Level 2 (`app/levels.py`, migrations `sql/005`–`007`):
+
+| endpoint | what it does |
+|---|---|
+| `GET /quiz?level=1\|2&item_type=` | practice question from one level |
+| `GET /progress?user_id=` | both levels, medals earned, whether Level 2 is unlocked (also awards medals) |
+| `POST /exam/start`, `POST /exam/submit` | level exam drawn by WSET weights (L1: 30 Q, pass 70%; L2: 50 Q, pass 55%); returns a review |
+| `GET/POST /sheets` | four-line tasting sheets; a sheet is complete when the palate line has a structure word and the feeling it refers to |
+| `GET /labels/tasks` | Level 2 label questions; correct answers via `/quiz/submit` count toward the medal |
+| `GET /bonus`, `POST /bonus/read` | ungraded Level 3–4 reading with small medals |
+| `GET /prompts` | ungraded aroma prompts for the sheet |
+
+Level 1 medal = exam passed + 6 complete sheets. Level 2 (unlocks after Level 1) = exam passed + 5 label tasks.
+
 The **Flow-2 graph** mirrors the n8n IF-branch exactly:
 
 ```
@@ -48,7 +64,9 @@ Docs UI at http://localhost:8000/docs
 
 ## Web client
 
-`web/` is the phone UI. It calls this API:
+The main front end is the Lovable app in the separate `vino-wisdom-trainer` repo (TanStack Start). It calls the Railway API by default; run it against a local API with `VITE_API_BASE=http://localhost:8000 bun run dev`. The API contract it uses is in `docs/lovable-handoff.md`.
+
+`web/` is the older phone UI, still served by this API at `/`. It calls:
 
 | screen | call |
 |---|---|
@@ -94,6 +112,12 @@ curl -s localhost:8000/scan -F file=@/path/to/label.jpg | jq
 
 ## Notes
 - Requires a `GEMINI_API_KEY` (chat/embeddings/vision all go to Gemini, matching the original).
+- The Gemini client is pinned to API version `v1beta` and `google-genai==2.22.0`. Newer SDK
+  releases may call `v1`, which rejects system instructions ("Developer instruction is not
+  enabled for api version v1"). Model errors are logged in full; the client gets a short reason.
+- On Railway, a changed variable is only staged until you press **Deploy** on the "Apply changes" bar.
+- New database: run `scripts/setup_db.sh`. Existing database: back up, then apply `sql/003`–`007`
+  in order (each is safe to re-run).
 - `wine_docs` embeddings are 768-dim (`gemini-embedding-001`, truncated with
   `output_dimensionality`). Change `EMBED_DIM` **and** the `vector(768)` column
   together if you switch embedding models.

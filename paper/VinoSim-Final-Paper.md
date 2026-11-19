@@ -273,7 +273,7 @@ Help people with no wine background who end up at a dinner table describe a glas
 
 ### Short-Term Goals
 
-For this semester: complete Level 1 and Level 2 in the app, front end and back end, including the tasting sheet, level exams, medals, and an age gate, which are being built from November 14 to 18, 2026; and, if time allows, run a small before-and-after check of the tasting sheet with a few people.
+For this semester: complete Level 1 and Level 2 in the app, front end and back end, including the tasting sheet, level exams, medals, and an age gate (built from November 14 to 18 and deployed on November 17, 2026); and, if time allows, run a small before-and-after check of the tasting sheet with a few people.
 
 ### Learning Goals
 
@@ -413,7 +413,7 @@ Table 3 is a draft logic model for VinoSim. It is my reconstruction from the cur
 
 ## Overview
 
-VinoSim has five main screens (Home, Quiz, Study, Tutor, and Cellar), organized into two levels, plus an age gate before any tasting content. Figure 2 shows the user flow through the redesigned screens. Some parts are built and running; others are being built from November 14 to 18, 2026, on a feature branch. I mark each part's status below. [[TO ADD: update after the 11/18 build — replace "in development" with what was built, and add screenshots of the tasting sheet, level exams, medals, and age gate]]
+VinoSim has five main screens (Home, Quiz, Study, Tutor, and Cellar), organized into two levels, plus an age gate before any tasting content. Figure 2 shows the user flow through the redesigned screens. All of the parts described below were built between November 14 and 18, 2026, and are running on the deployed service. Figure 3 shows them in a live walkthrough.
 
 **Figure 2**
 
@@ -425,7 +425,7 @@ VinoSim has five main screens (Home, Quiz, Study, Tutor, and Cellar), organized 
 
 ## Two Levels and Medals
 
-*Status: in development (11/14–11/18).*
+*Status: built and deployed (November 2026).*
 
 The app is organized into two levels. Level 1, "Foundations of Tasting," covers the structural words and the tasting sheet, mirroring the scope of WSET Level 1. Level 2, "Grapes, Regions and Labels," covers labels, grape and regional styles, sparkling and fortified wines, and service, mirroring the scope of WSET Level 2. Completing both levels completes the course. Learners who want a recognized certificate are pointed to WSET Level 1.
 
@@ -435,7 +435,7 @@ The rationale comes from motivation research. Badges can increase activity (Hama
 
 ## The Tasting Sheet
 
-*Status: in development (11/14–11/18).*
+*Status: built and deployed (November 2026).*
 
 The tasting sheet is the center of Level 1. It has four lines and two columns (Table 4). Each line asks about one part of the wine, and each has a column for "What I sense," in the learner's own words, and a column for "Common words people use." The two columns came directly from critique point 2: a learner's "this feels really heavy" is not wrong, and the shared word "full-bodied" sits next to it rather than replacing it.
 
@@ -458,7 +458,7 @@ A sheet counts as complete when all four lines are written in the learner's own 
 
 ## The Tutor
 
-*Status: chat, both modes, retrieval, and the four-step interface are built in the prototype; the sheet beside the chat and the revised tone rules are in development.*
+*Status: built and deployed: both modes, retrieval, the four-step interface, the sheet beside the chat, and the revised tone rules.*
 
 The tutor (Figures 3 and 4) is a chat with two modes. In correction mode, the learner describes what they notice or asks a question, the back end retrieves the four most similar notes from the knowledge base, and the model answers from those notes and lists the ones it used. In roleplay mode, the learner chats with a friendly sommelier character to practise speaking up; nothing is retrieved and nothing is graded.
 
@@ -486,7 +486,7 @@ I rejected one feature outright: memorized lines. Several survey respondents ask
 
 ## The Quiz
 
-*Status: the label card and question bank screens are built as front-end samples; the expanded bank is in the database; level exams are in development.*
+*Status: built and deployed: practice by level, both level exams with a review of every answer, label tasks, and label scanning.*
 
 The quiz has two kinds of item, both shown one at a time (Figures 5 and 6). The label card shows a real wine label and asks the learner to pick three true facts from six. On the Château Margaux label, the correct facts are the producer (Château Margaux), the region (Bordeaux), and the style (full-bodied); the distractors are a 2020 vintage, the Pinot Noir grape, and 13.5% alcohol. Bank items are single-answer multiple-choice questions with a photo and immediate feedback. Figure 6 asks how orange wine gets its color; the answer is that white grapes ferment on their skins. That question stays in practice only and is not used in exams.
 
@@ -520,15 +520,15 @@ Study holds short articles, such as "What are tannins?" and "A little guide to B
 
 ## Cellar as a Portfolio
 
-*Status: built (saved on the device).*
+*Status: built. Bottles are saved on the device; tasting sheets are saved on the server.*
 
-The Cellar is a personal record of bottles the learner has tried, with name, grape, region, year, notes, and a rating (Figure 2, right). In the current build, entries are stored in the browser on the learner's own device. I treat the Cellar as a learning portfolio: over time it holds the learner's own descriptions, which they can look back on. Once the tasting sheet is built, completed sheets will be linked to Cellar entries, so the six sheets required for the Level 1 medal become a visible record of progress. [[TO ADD: update after the 11/18 build — confirm whether sheets are saved with Cellar entries]]
+The Cellar is a personal record of bottles the learner has tried, with name, grape, region, year, notes, and a rating (Figure 2, right). In the current build, entries are stored in the browser on the learner's own device. I treat the Cellar as a learning portfolio: over time it holds the learner's own descriptions, which they can look back on. Completed tasting sheets appear in the Cellar under "Tasting notes," each marked complete or not, so the six sheets required for the Level 1 medal become a visible record of progress (Figure 3).
 
 ## Age Gate and Responsible Drinking
 
-*Status: in development (11/14–11/18).*
+*Status: built and deployed (November 2026).*
 
-Before any tasting content, the app asks the user to confirm that they are of legal drinking age, which is 21 in the United States. WSET's Level 1 specification takes a similar line: under-age candidates may take the course but may not taste (WSET, 2022). The app also includes a short responsible-drinking note: small sips are enough, and spitting is fine. [[TO ADD: how the age gate works (for example, a self-declared birth date or a yes/no confirmation) and the exact wording of the responsible-drinking note, after the build]]
+Before any tasting content, the app asks the user to confirm that they are of legal drinking age, which is 21 in the United States. WSET's Level 1 specification takes a similar line: under-age candidates may take the course but may not taste (WSET, 2022). The app also includes a short responsible-drinking note: small sips are enough, and spitting is fine. The gate is a yes/no confirmation that the user is of legal drinking age where they live (21 or older in the United States), shown before any other screen. The note reads: "Tasting is about small sips. Spitting is completely fine, and so is learning without drinking at all." Answering no shows a short page asking the user to come back later. The confirmation is remembered on the device only; no birth date is collected.
 
 ## Back-End Architecture
 
@@ -567,16 +567,16 @@ Table 5 summarizes the same workflow.
 
 | Step | Screen(s) | What the learner does | Evidence produced | Status |
 |---|---|---|---|---|
-| 1. Age gate | Age gate | Confirms legal drinking age; reads responsible-drinking note | None | In development |
-| 2. Level 1 practice | Home, Quiz, Study | Answers sensation and cause items; reads notes | Quiz attempts; learner profile | Built (quiz screens use sample data) |
-| 3. Tasting sheets | Tutor, tasting sheet, Cellar | Writes four-line sheets with tutor support | Six completed sheets | Tutor built; sheet in development |
-| 4. Level 1 exam | Quiz (exam) | Takes 30-question exam | Exam result (pass at 70%, provisional) | In development |
-| 5. Level 1 medal | Progress | Receives medal; Level 2 unlocks | Medal | In development |
-| 6. Level 2 practice | Quiz (label card, bank), Study | Reads labels; answers Level 2 items | Five label-reading tasks | Label card built as sample; tasks in development |
-| 7. Level 2 exam and medal | Quiz (exam), Progress | Takes 50-question exam; receives medal | Exam result (pass at 55%, provisional); medal | In development |
-| 8. Bonus (optional) | Study, Progress | Chooses ungraded interest topics | Bonus medals | Being refined |
+| 1. Age gate | Age gate | Confirms legal drinking age; reads responsible-drinking note | None | Built |
+| 2. Level 1 practice | Home, Quiz, Study | Answers sensation and cause items; reads notes | Quiz attempts; learner profile | Built |
+| 3. Tasting sheets | Tutor, tasting sheet, Cellar | Writes four-line sheets with tutor support | Six completed sheets | Built |
+| 4. Level 1 exam | Quiz (exam) | Takes 30-question exam | Exam result (pass at 70%, provisional) | Built |
+| 5. Level 1 medal | Progress | Receives medal; Level 2 unlocks | Medal | Built |
+| 6. Level 2 practice | Quiz (label card, bank), Study | Reads labels; answers Level 2 items | Five label-reading tasks | Built |
+| 7. Level 2 exam and medal | Quiz (exam), Progress | Takes 50-question exam; receives medal | Exam result (pass at 55%, provisional); medal | Built |
+| 8. Bonus (optional) | Study, Progress | Chooses ungraded interest topics | Bonus medals | Built; three topics so far |
 
-*Note.* [[TO ADD: update after the 11/18 build — revise the Status column]]
+*Note.* Status as of November 19, 2026. Each step was checked on the deployed service in the walkthrough described in Section VII.
 
 # VII. Implementation, Evaluation, and Iteration
 
@@ -604,6 +604,18 @@ I set a blueprint for the expanded bank: the share of questions per learning out
 
 The move from six n8n workflows to a FastAPI and LangGraph service was itself an iteration. The compatibility layer allowed a direct comparison: the old front end, unchanged, could call the new back end through the same `/webhook/*` routes. After the migration, the model and embedding versions were updated (gemini-2.5-flash for chat and vision, gemini-embedding-001 at 768 dimensions), the bundled web client was fitted to phone screens, and the service was deployed to Railway. [[TO ADD: any problems you hit during migration and how you verified that each endpoint behaved like the old workflow]]
 
+### Live Walkthrough
+
+After deployment, I walked through the whole learner path on the live service with a fresh test account: age gate, a tasting sheet written with the tutor, five more sheets, the Level 1 exam, the Level 1 medal, five label tasks, the Level 2 exam, and the Level 2 medal. Repetitive steps (sheets two to six, most label tasks) were entered directly through the API; the first sheet, the Level 1 exam, the last label task, and every progress screen were done in the app. The walkthrough found four problems, all fixed the same week (Table 6). It tests the software, not learning.
+
+**Figure 3**
+
+*Live Walkthrough of the Learner Path*
+
+![Walkthrough: tasting sheet, exam result, path page, Cellar notes](figures/fig3-walkthrough.png){width=6}
+
+*Note.* From left to right: the tasting sheet after saving, the last label task with the Level 2 medal notice, the path page with both medals, and the learner's tasting notes in the Cellar. Screens from the deployed app, November 19, 2026.
+
 ## Feature-by-Iteration Matrix
 
 Table 6 lists the main design features, what happened when each was implemented or tested, and the specific iteration that followed.
@@ -627,10 +639,16 @@ Table 6 lists the main design features, what happened when each was implemented 
 | Personalization | Study articles were the same for everyone | Learner-profile loop: each tutor turn is distilled into weak and mentioned topics from a closed vocabulary, used to rank articles |
 | User interface | The v0 front end had no visible structure for tasting | Redesigned mobile screens; the tutor shows four steps that match the sheet |
 | Medal design | A certificate would imply an accreditation VinoSim does not have | In-app medals tied to exams and sheets (six sheets for Level 1; five label tasks for Level 2); no leaderboard; no streaks |
-| Age gate | The app had no check on drinking age | Age gate and responsible-drinking note added (in development) |
+| Age gate | The app had no check on drinking age | Yes/no age gate and responsible-drinking note shown before any other screen; built and deployed |
+| Palate check | In the walkthrough, a palate line of "nice" was correctly marked incomplete (no structure word); "high acidity, my mouth watered" was marked complete | Kept as built; the sheet names the missing part so the learner knows what to add |
+| Level exams | Both exams ran end to end on the live service (Level 1: 28/30, pass; Level 2: 44/50, pass), with a review of every missed question | Kept as built; pass marks stay provisional until real learners take them |
+| Medals | Medals were awarded at the right moment: Level 1 after the exam plus six sheets, Level 2 after the exam plus the fifth label task; Level 2 stayed locked until then | The medal notice was pushed off-screen on narrow phones; fixed so it stays centred |
+| Tutor in deployment | The live tutor failed with a server error, while the same code worked locally | Cause found in the logs (a newer model library called an API version that rejects system instructions); the version was pinned and errors are now logged |
+| Tutor wording | In the walkthrough the tutor said "the knowledge snippets I have don't…", exposing its retrieval to the learner | Prompt changed: the tutor never mentions snippets or sources and falls back to general beginner guidance |
+| Level names | The first names ("Talk about the glass," "Read the bottle") read as informal next to the WSET framing | Renamed "Foundations of Tasting" and "Grapes, Regions and Labels" |
 | Listening and responding (critique point 3) | Could not be designed and evaluated within the semester | Recorded as Level 1 LO3, moved to future work |
 
-*Note.* [[TO ADD: update after the 11/18 build — add results for the tasting sheet, exams, medals, and age gate]]
+*Note.* Rows from "Palate check" down come from the live walkthrough on November 19, 2026, run by the author with a test account. They show that the features work as designed, not that they help anyone learn.
 
 ## What Has Not Been Evaluated
 
@@ -680,9 +698,9 @@ Optional bonus content in the direction of WSET Levels 3 and 4 (terroir, ageing,
 
 The most important next step is to find out whether VinoSim helps. After the small before-and-after check, a stronger study would recruit people from the target group rather than friends, use several wines, compare sheets written with and without the app, and ask about confidence at a real event some time later. It would also be worth testing whether the completion standard can be scored reliably by two different readers.
 
-## Connecting the Quiz to the New Interface
+## Reviewing the Question Bank With Real Learners
 
-The redesigned quiz screens still use two sample items. Connecting them to the back-end bank, filtering by level, and drawing exam questions per learning outcome is the next engineering task after the current build.
+The quiz now draws from the full bank, by level, and the exams sample questions per learning outcome. The next step is to look at which questions real learners miss most often and rewrite the ones that are unclear rather than hard.
 
 ## Real-World Adoption Factors
 
@@ -827,4 +845,12 @@ This is the author's own simplified sheet, not the WSET Systematic Approach to T
 
 # Appendix D: Development Plan
 
-Level 1 and Level 2 (front end and back end, including the tasting sheet, level exams, medals, and age gate) are being built from November 14 to 18, 2026, on a feature branch. [[TO ADD: development plan table with tasks, dates, and status; update after the 11/18 build]]
+Level 1 and Level 2 (front end and back end, including the tasting sheet, level exams, medals, and age gate) were built from November 14 to 18, 2026, and deployed on November 17.
+
+| Date | Planned work | Status |
+|---|---|---|
+| November 14 | Decisions on the palate standard and label tasks; question bank imported locally; new database tables | Done |
+| November 15 | Back end: practice by level, exams, tasting sheets, progress and medals, label tasks, tutor prompt changes | Done |
+| November 16 | Front end, Level 1: age gate, path page, exam mode, tasting sheet beside the tutor, Cellar notes, word cards | Done |
+| November 17 | Front end, Level 2: label tasks, Level 2 exam, bonus area; local end-to-end test | Done |
+| November 18 | Back up and migrate the live database; deploy; live walkthrough; screenshots; update this paper | Done November 17 to 19 (deployment problems with the model API delayed the walkthrough by a day) |
