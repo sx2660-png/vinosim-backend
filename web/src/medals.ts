@@ -1,6 +1,6 @@
 export function medalName(id: string): string {
-  if (id === "level1") return "Level 1 medal · Talk about the glass";
-  if (id === "level2") return "Level 2 medal · Read the bottle";
+  if (id === "level1") return "Level 1 medal · Foundations of Tasting";
+  if (id === "level2") return "Level 2 medal · Grapes, Regions and Labels";
   if (id.startsWith("bonus:")) return "Bonus medal";
   return "Medal";
 }

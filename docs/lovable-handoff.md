@@ -117,9 +117,9 @@ Add the two learning levels and medals, and connect Quiz, Progress, Study and Ce
      "level2": { "unlocked": boolean, "exam": same shape, "labels_done", "labels_needed", "medal": null | iso date },
      "bonus": { "status": string, "articles": [ { "id", "title", "read", "medal" } ] },
      "course_complete": boolean, "new_medals": string[] }.
-   - Level 1 "Talk about the glass": progress bar sheets_complete / sheets_needed (6), exam line, buttons "Write a sheet"
+   - Level 1 "Foundations of Tasting": progress bar sheets_complete / sheets_needed (6), exam line, buttons "Write a sheet"
      (Tutor) and "Level 1 exam".
-   - Level 2 "Read the bottle": if not unlocked, show it dimmed with "Opens after the Level 1 medal. You can already
+   - Level 2 "Grapes, Regions and Labels": if not unlocked, show it dimmed with "Opens after the Level 1 medal. You can already
      practise Level 2 questions in Quiz." If unlocked: label tasks bar labels_done / labels_needed (5), exam line, buttons
      "Label tasks" and "Level 2 exam".
    - When course_complete: "Both medals earned. If you would like a formal certificate, a WSET Level 1 course is a
@@ -128,7 +128,7 @@ Add the two learning levels and medals, and connect Quiz, Progress, Study and Ce
    Also show a compact two-row version of this on Home. No streaks, no leaderboards, no time-spent stats.
 
 2. Medal toast: whenever any response contains a non-empty "new_medals" array, show a toast: "New medal" plus one line
-   per id: "level1" → "Level 1 medal · Talk about the glass", "level2" → "Level 2 medal · Read the bottle",
+   per id: "level1" → "Level 1 medal · Foundations of Tasting", "level2" → "Level 2 medal · Grapes, Regions and Labels",
    "bonus:<n>" → "Bonus medal", with buttons "See your path" and "Close".
 
 3. Quiz tabs: Practice · Exam · Labels · Photo. Keep the existing card and option styles.
