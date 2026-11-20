@@ -95,7 +95,7 @@ def agent(req: AgentRequest, background: BackgroundTasks):
     if req.mode not in ("correction", "roleplay"):
         raise HTTPException(400, "mode must be 'correction' or 'roleplay'")
     try:
-        result = run_agent(req.user_id, req.mode, req.message, step=req.step)
+        result = run_agent(req.user_id, req.mode, req.message, step=req.step, sheet_id=req.sheet_id)
     except Exception as exc:
         raise _model_failure(exc) from exc
     background.add_task(

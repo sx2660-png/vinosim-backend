@@ -10,8 +10,10 @@ class AgentState(TypedDict, total=False):
     mode: str          # 'correction' | 'roleplay'
     message: str
     step: str | None   # sheet line the learner is on: appearance | nose | palate | liking
+    sheet_id: int | None  # a saved sheet the learner wants to talk about
     # working memory
     history: list[dict[str, str]]
     retrieved: list[dict[str, Any]]
+    sheet_note: str
     # output
     response: dict[str, Any]

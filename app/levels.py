@@ -1,6 +1,7 @@
 """App levels: exams, tasting sheets, label tasks, medals and bonus reading.
 
-Level 1 medal = pass the Level 1 exam + 6 complete tasting sheets.
+Level 1 medal = pass the Level 1 exam + complete tasting sheets for 6 different wines
+(re-tasting a wine keeps the new sheet but does not count it twice).
 Level 2 medal = pass the Level 2 exam + 5 distinct label questions answered correctly.
 Level 2 opens once the Level 1 medal is earned. Bonus medals are ungraded.
 """
@@ -12,8 +13,8 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException
 
-from . import db
-from .schemas import BonusRead, ExamStart, ExamSubmit, SheetIn
+from . import db, llm
+from .schemas import BonusRead, ExamStart, ExamSubmit, SheetFeedback, SheetFeedbackIn, SheetIn
 
 router = APIRouter()
 
@@ -55,6 +56,29 @@ def check_sheet(fields: dict[str, str]) -> tuple[bool, list[str], list[str]]:
         elif not (SENSATION_WORDS.search(palate) or fields.get("palate_because", "").strip()):
             missing.append("palate_sensation")
     return not missing, words, missing
+
+
+# Completeness: six things a full sheet has. Shown as a score after every save.
+COMPLETENESS_ITEMS = ("appearance", "nose", "palate", "structure_word", "sensation", "liking")
+
+
+def completeness(missing: list[str]) -> dict[str, Any]:
+    gaps = set(missing)
+    if "palate" in gaps:
+        gaps |= {"structure_word", "sensation"}
+    if "palate_structure_word" in gaps:
+        gaps |= {"structure_word", "sensation"}
+    if "palate_sensation" in gaps:
+        gaps.add("sensation")
+    done = [item for item in COMPLETENESS_ITEMS if item not in gaps]
+    return {"score": len(done), "total": len(COMPLETENESS_ITEMS), "done": done,
+            "missing": [item for item in COMPLETENESS_ITEMS if item in gaps]}
+
+
+def sheet_check(sheet: dict[str, Any]) -> dict[str, Any]:
+    """What is still missing on a saved sheet, and its completeness score."""
+    _, _, missing = check_sheet(sheet)
+    return {"missing": missing, "completeness": completeness(missing)}
 
 
 def sample_exam(level: int, count: int) -> list[int]:
@@ -163,17 +187,135 @@ def exam_submit(body: ExamSubmit):
 
 @router.get("/sheets")
 def get_sheets(user_id: str):
-    return {"sheets": db.list_sheets(user_id)}
+    sheets = db.list_sheets(user_id)
+    for sheet in sheets:
+        sheet["completeness"] = sheet_check(sheet)["completeness"]
+    return {"sheets": sheets}
 
 
 @router.post("/sheets")
 def save_sheet(body: SheetIn):
+    """Save (or edit, when id is given) a sheet. Progress updates here, right away;
+    the tutor's note comes from POST /sheets/feedback afterwards so saving never waits on the model."""
     fields = body.model_dump(exclude={"user_id", "id"})
     complete, words, missing = check_sheet(fields)
     sheet = db.save_sheet(body.user_id, body.id, fields, words, complete)
     if sheet is None:
         raise HTTPException(404, "Unknown sheet.")
-    return {"sheet": sheet, "missing": missing, "new_medals": progress(body.user_id)["new_medals"]}
+    state = progress(body.user_id)
+    return {
+        "sheet": sheet,
+        "missing": missing,
+        "completeness": completeness(missing),
+        "previous": db.previous_tasting(body.user_id, sheet["id"]),
+        "wines_counted": state["level1"]["sheets_complete"],
+        "wines_needed": state["level1"]["sheets_needed"],
+        "new_medals": state["new_medals"],
+    }
+
+
+SHEET_FEEDBACK_SYSTEM = (
+    "You are VinoSim, a warm wine tutor. A beginner has just saved a tasting sheet with four lines: "
+    "appearance, nose, palate and whether they like the wine. Your note should leave them feeling "
+    "more able to describe wine, because it shows them what they already did well.\n"
+    "Write 2 or 3 short sentences, under 60 words in total:\n"
+    "1. Quote a few of the learner's own words in quotation marks and say exactly what was good "
+    "about them (for example: linked a feeling to a structure word, said how deep the colour was, "
+    "gave a reason, was honest about what they liked). Praise what they did, not the person.\n"
+    "2. If the sheet is missing something, invite them to add the single most useful missing "
+    "piece now (they can edit the sheet straight away), in a light \"you could add...\" tone, and "
+    "say that it would complete the sheet. If nothing is missing, the sheet is complete: never "
+    "imply otherwise. You may suggest one optional thing to notice next time, or none at all.\n"
+    "If an earlier tasting of the same wine is given, name one concrete thing that grew since then "
+    "(a more specific word, a reason added, a line filled in). Only mention growth that is really "
+    "there; if little changed, say what they noticed both times.\n"
+    "Rules:\n"
+    "- Smell, flavour and liking have no wrong answers. Never correct them or say what this wine "
+    "should smell or taste like; you have not tasted it.\n"
+    "- No grades or scores, and never the words correct, wrong, mistake or should.\n"
+    "- No empty or inflated praise. Never use amazing, perfect, excellent, great, wonderful, "
+    "fantastic, well done, or in Chinese 很棒, 太棒了, 非常好, 优秀. Say what the words do instead "
+    "(\"'deep ruby' tells me both the colour and how deep it is\").\n"
+    "- Any next step stays within beginner tasting: colour and depth, smells, and the five "
+    "structure words (acidity, tannin, body, sweetness, alcohol). Do not bring in finish, length, "
+    "complexity or other advanced terms.\n"
+    "- Do not end with a question. Plain text only, no Markdown.\n"
+    "- Reply in the language the learner wrote in."
+)
+
+# Missing items in the order a learner should fill them, with a plain description for the model.
+_GAP_TEXT = {
+    "appearance": "the appearance line is empty",
+    "nose": "the nose line is empty",
+    "palate": "the palate line is empty",
+    "palate_structure_word": "the palate line has no structure word (acidity, tannin, body, sweetness, alcohol)",
+    "palate_sensation": "the palate line names a structure word but not the feeling behind it",
+    "liking": "the liking line is empty",
+}
+
+
+def _sheet_text(sheet: dict[str, Any]) -> str:
+    palate = sheet["palate"] + (f" (because {sheet['palate_because']})" if sheet["palate_because"] else "")
+    return (
+        f"Wine: {sheet['wine_name'] or '(not named)'}\n"
+        f"Appearance: {sheet['appearance'] or '(empty)'}\n"
+        f"Nose: {sheet['nose'] or '(empty)'}\n"
+        f"Palate: {palate or '(empty)'}\n"
+        f"Liking: {sheet['liking'] or '(empty)'}"
+    )
+
+
+def sheet_feedback_text(user_id: str, sheet_id: int) -> str:
+    sheet = db.get_sheet(user_id, sheet_id)
+    if sheet is None:
+        raise HTTPException(404, "Unknown sheet.")
+    missing = sheet_check(sheet)["missing"]
+    parts = [f"The sheet just saved:\n{_sheet_text(sheet)}"]
+    parts.append(
+        "Still missing: " + "; ".join(_GAP_TEXT[m] for m in missing) if missing
+        else "Nothing is missing: the sheet is complete."
+    )
+    previous = db.previous_tasting(user_id, sheet_id)
+    if previous:
+        parts.append(f"Earlier tasting of the same wine ({previous['created_at'][:10]}):\n{_sheet_text(previous)}")
+    message = "\n\n".join(parts)
+    text = _feedback_call(message)
+    # The model still slips into stock praise now and then; one rewrite is enough to clear it.
+    found = sorted({m.group(0) for m in EMPTY_PRAISE.finditer(text)})
+    if found:
+        text = _feedback_call(
+            f"{message}\n\nYour draft was:\n{text}\n\nRewrite it without these words: "
+            f"{', '.join(found)}. Keep the quotes and the specific reasons."
+        )
+    return text
+
+
+EMPTY_PRAISE = re.compile(
+    r"\b(amazing|perfect(ly)?|excellent|great|wonderful|fantastic|brilliant|awesome|well done)\b"
+    r"|很棒|太棒|非常好|优秀|真棒",
+    re.IGNORECASE,
+)
+
+
+def _feedback_call(message: str) -> str:
+    result = llm.structured_chat(
+        system=SHEET_FEEDBACK_SYSTEM, history=[], user_message=message,
+        schema=SheetFeedback, temperature=0.3,
+    )
+    return result.feedback.strip()
+
+
+@router.post("/sheets/feedback")
+def sheet_feedback(body: SheetFeedbackIn):
+    """A short tutor note on a saved sheet. Called by the app after the save has finished."""
+    from .main import _model_failure  # same error mapping as /agent
+
+    try:
+        return {"feedback": sheet_feedback_text(body.user_id, body.sheet_id)}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise _model_failure(exc) from exc
 
 
 @router.get("/labels/tasks")

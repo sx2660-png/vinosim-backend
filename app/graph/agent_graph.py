@@ -20,19 +20,38 @@ from ..config import settings
 from ..schemas import CorrectionResponse, RoleplayResponse
 from .state import AgentState
 
+# Both prompts aim at confidence: specific praise for what the learner actually did, then at
+# most one small next step. Generic praise is avoided because adults see through it and it
+# makes the tutor's later comments mean less.
 CORRECTION_SYSTEM = (
-    "You are VinoSim, a warm tutor helping a beginner put words to a glass of wine. "
+    "You are VinoSim, a warm tutor helping a beginner put words to a glass of wine. The goal is "
+    "that they leave each exchange a little more sure they can describe wine in their own words.\n"
     "Base facts on the provided knowledge snippets. If they do not cover the question, give "
     "general beginner guidance (the standard WSET tasting words are fine) without inventing "
     "specifics about a particular wine.\n"
-    "Rules:\n"
+    "How to respond:\n"
+    "- Start from what the learner wrote or said. When they have described something, quote a "
+    "word or two of theirs and say specifically what is useful about it (for example, \"mouth-"
+    "watering\" is exactly the feeling people call acidity). Praise what they did, never the "
+    "person, and skip empty words like amazing, perfect, excellent or great job.\n"
+    "- Then give at most one next step, framed as something they could try or add, not as "
+    "something they got wrong.\n"
     "- Smell, flavour and whether the learner likes the wine have no wrong answers. Never tell "
-    "them an aroma, flavour or preference is wrong. Acknowledge their words first, then offer "
-    "words other people often use (\"Many people describe that as ...; others say ...\").\n"
+    "them an aroma, flavour or preference is wrong, and never say what this wine should smell or "
+    "taste like. Offer words other people often use (\"Many people describe that as ...; others "
+    "say ...\").\n"
     "- For structure (acidity, tannin, body, sweetness, alcohol), help link what they feel to one "
     "word, say where in the mouth it is felt, and give one simple reason (for example, tannin "
-    "comes from grape skins and seeds, which is why red wines have more of it).\n"
-    "- Ask at most one question at a time. Keep it short and jargon-light.\n"
+    "comes from grape skins and seeds, which is why red wines have more of it). If they used a "
+    "word that does not fit the feeling they describe, show the better match gently, starting "
+    "with the part they got right.\n"
+    "- \"Dry\" has two meanings: in wine it usually means not sweet, while a drying, rough "
+    "feeling on the gums is tannin. If the learner says dry, briefly cover both or ask which "
+    "they mean.\n"
+    "- When the learner is unsure or apologetic, tell them that noticing the feeling is the "
+    "hard part and the word comes with practice.\n"
+    "- Ask at most one question at a time. Keep the whole reply under 80 words, calm rather "
+    "than gushing (no exclamation marks), and jargon-light.\n"
     "- Never recommend wines to buy, mention prices, or hand the learner a line to memorize.\n"
     "- Write plain text: no Markdown, asterisks or bullet symbols.\n"
     "- Never mention snippets, sources, a knowledge base or what you were given. Speak as a "
@@ -43,10 +62,12 @@ CORRECTION_SYSTEM = (
 ROLEPLAY_SYSTEM = (
     "You are a friendly guest sitting next to the learner at a dinner where wine has just been "
     "poured. Chat naturally and ask what they notice about the wine, so they can practise saying "
-    "a sentence or two about it in their own words. React with interest; if they use a word like "
-    "acidity, tannin or body, show you understood. Never say their impression is wrong. Do not "
-    "recommend wines, mention prices, or lecture. Keep replies to two or three sentences. "
-    "Write plain text without Markdown."
+    "a sentence or two about it in their own words. React with real interest to what they say, "
+    "picking up their own words; if they use a word like acidity, tannin or body, show you "
+    "understood and that it helped you picture the wine. If they hesitate, make it easy: share a "
+    "simple impression of your own and ask what they think. Never say their impression is wrong "
+    "and never quiz them. Do not recommend wines, mention prices, or lecture. Keep replies to two "
+    "or three sentences. Write plain text without Markdown."
 )
 
 # Where the learner is on the four-line tasting sheet (scaffolding, one step at a time).
@@ -68,7 +89,7 @@ def _step_note(state: AgentState) -> str:
 
 def load_history(state: AgentState) -> AgentState:
     history = db.load_chat_history(state["user_id"], state["mode"], limit=10)
-    return {"history": history}
+    return {"history": history, "sheet_note": _sheet_note(state)}
 
 
 def route_by_mode(state: AgentState) -> str:
@@ -76,9 +97,27 @@ def route_by_mode(state: AgentState) -> str:
     return "correction" if state.get("mode") == "correction" else "roleplay"
 
 
+def _sheet_note(state: AgentState) -> str:
+    """A saved sheet the learner wants to talk about (the "talk more" button)."""
+    sheet_id = state.get("sheet_id")
+    sheet = db.get_sheet(state["user_id"], sheet_id) if sheet_id else None
+    if not sheet:
+        return ""
+    palate = sheet["palate"] + (f" (because {sheet['palate_because']})" if sheet["palate_because"] else "")
+    return (
+        "\n\nThe learner's saved tasting sheet, which they want to talk about:\n"
+        f"Wine: {sheet['wine_name'] or '(not named)'}\n"
+        f"Appearance: {sheet['appearance'] or '(empty)'}\n"
+        f"Nose: {sheet['nose'] or '(empty)'}\n"
+        f"Palate: {palate or '(empty)'}\n"
+        f"Liking: {sheet['liking'] or '(empty)'}"
+    )
+
+
 def retrieve(state: AgentState) -> AgentState:
     """PGVector similarity search over wine_docs."""
-    q_emb = llm.embed(state["message"], task_type="RETRIEVAL_QUERY")
+    query = state["message"] + state.get("sheet_note", "")
+    q_emb = llm.embed(query, task_type="RETRIEVAL_QUERY")
     docs = db.similarity_search(q_emb, k=settings.rag_top_k)
     return {"retrieved": docs}
 
@@ -89,6 +128,7 @@ def correction_agent(state: AgentState) -> AgentState:
     user_message = (
         f"Knowledge snippets:\n{context}\n\n"
         f"User question: {state['message']}"
+        f"{state.get('sheet_note', '')}"
         f"{_step_note(state)}"
     )
     result = llm.structured_chat(
@@ -106,7 +146,7 @@ def roleplay_agent(state: AgentState) -> AgentState:
     result = llm.structured_chat(
         system=ROLEPLAY_SYSTEM,
         history=state.get("history", []),
-        user_message=state["message"] + _step_note(state),
+        user_message=state["message"] + state.get("sheet_note", "") + _step_note(state),
         schema=RoleplayResponse,
         temperature=0.8,
     )
@@ -144,7 +184,9 @@ def build_graph():
     return g.compile()
 
 
-def run_agent(user_id: str, mode: str, message: str, step: str | None = None) -> dict:
+def run_agent(user_id: str, mode: str, message: str, step: str | None = None,
+              sheet_id: int | None = None) -> dict:
     graph = build_graph()
-    final = graph.invoke({"user_id": user_id, "mode": mode, "message": message, "step": step})
+    final = graph.invoke({"user_id": user_id, "mode": mode, "message": message, "step": step,
+                          "sheet_id": sheet_id})
     return final["response"]

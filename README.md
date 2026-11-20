@@ -24,12 +24,13 @@ Two app levels modelled on WSET Level 1 and Level 2 (`app/levels.py`, migrations
 | `GET /quiz?level=1\|2&item_type=` | practice question from one level |
 | `GET /progress?user_id=` | both levels, medals earned, whether Level 2 is unlocked (also awards medals) |
 | `POST /exam/start`, `POST /exam/submit` | level exam drawn by WSET weights (L1: 30 Q, pass 70%; L2: 50 Q, pass 55%); returns a review |
-| `GET/POST /sheets` | four-line tasting sheets; a sheet is complete when the palate line has a structure word and the feeling it refers to |
+| `GET/POST /sheets` | four-line tasting sheets; a sheet is complete when the palate line has a structure word and the feeling it refers to. Posting with an `id` edits that sheet. The response has a completeness score (out of 6), the earlier tasting of the same wine if there is one, and the Level 1 wine count |
+| `POST /sheets/feedback` | a 2–3 sentence tutor note on a saved sheet (quotes the learner, names what worked, at most one next step). The app calls it after the save, so a slow or failed model call never blocks progress. Not stored |
 | `GET /labels/tasks` | Level 2 label questions; correct answers via `/quiz/submit` count toward the medal |
 | `GET /bonus`, `POST /bonus/read` | ungraded Level 3–4 reading with small medals |
 | `GET /prompts` | ungraded aroma prompts for the sheet |
 
-Level 1 medal = exam passed + 6 complete sheets. Level 2 (unlocks after Level 1) = exam passed + 5 label tasks.
+Level 1 medal = exam passed + complete sheets for 6 different wines (sheets with the same wine name, ignoring case and spacing, count once, so re-tasting is free). `POST /agent` also takes an optional `sheet_id` so the tutor can talk about a saved sheet. Level 2 (unlocks after Level 1) = exam passed + 5 label tasks.
 
 The **Flow-2 graph** mirrors the n8n IF-branch exactly:
 
