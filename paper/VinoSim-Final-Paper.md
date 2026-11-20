@@ -280,212 +280,96 @@ Table 4 merges the first-semester logic model with the current design. The arrow
 
 ## Overview
 
-VinoSim has five main screens (Home, Quiz, Study, Tutor, and Cellar), organized into two levels, plus an age gate before any tasting content. Figure 2 shows the user flow through the redesigned screens. All of the parts described below were built between November 14 and 18, 2026, and are running on the deployed service. Figure 3 shows them in a live walkthrough.
+VinoSim has five screens (Home, Quiz, Study, Tutor, and Cellar), organized into two levels, with an age gate before any tasting content (Figure 3). Everything described here was built between November 14 and 20, 2026, and runs on the deployed service.
 
-**Figure 2**
+**Figure 3**
 
-*User Flow Through the Redesigned Screens*
+*The Five Main Screens*
 
 ![User flow: Home, Quiz, Study, Tutor, Cellar](figures/fig2-user-flow.png){width=6}
 
-*Note.* From left to right: Home, Quiz, a Study article, the Tutor in correction mode, and the Cellar. Prototype screens made in Lovable this semester.
+*Note.* From left to right: Home, Quiz, a Study article, the Tutor, and the Cellar.
 
 ## Two Levels and Medals
 
-*Status: built and deployed (November 2026).*
-
-The app is organized into two levels. Level 1, "Foundations of Tasting," covers the structural words and the tasting sheet, mirroring the scope of WSET Level 1. Level 2, "Grapes, Regions and Labels," covers labels, grape and regional styles, sparkling and fortified wines, and service, mirroring the scope of WSET Level 2. Completing both levels completes the course. Learners who want a recognized certificate are pointed to WSET Level 1.
-
-Medals take the place of a certificate. They exist only inside the app and are not branded as WSET. The Level 1 medal requires passing the Level 1 exam and completing six tasting sheets, which mirrors the six recommended tasting samples in WSET Level 1 (WSET, 2022), and it unlocks Level 2. The Level 2 medal requires passing the Level 2 exam and completing five label-reading tasks. Optional bonus medals cover ungraded interest content in the direction of WSET Levels 3 and 4, such as terroir, ageing, and more regions; this part is still being refined. [[TO ADD: list of bonus topics once decided]]
-
-The rationale comes from motivation research. Badges can increase activity (Hamari, 2017), but rewards that feel controlling can undermine intrinsic motivation (Deci et al., 1999). So the medals reward evidence of learning rather than streaks or time spent, there is no leaderboard, and the learner chooses which bonus topics to pursue (Ryan & Deci, 2000). The leaderboard decision also follows from the survey: three of the seven quiet respondents fear being judged, and a ranking would recreate the table they are trying to get comfortable at.
+Level 1, "Foundations of Tasting," covers the structure words and the tasting sheet, mirroring WSET Level 1. Level 2, "Grapes, Regions and Labels," covers labels, grape and regional styles, sparkling and fortified wines, and service, mirroring WSET Level 2. Medals take the place of a certificate and are not branded as WSET. The Level 1 medal requires a passed Level 1 exam and complete tasting sheets for six different wines, mirroring the six tasting samples in WSET Level 1 (WSET, 2022). It unlocks Level 2. The Level 2 medal requires a passed Level 2 exam and five label-reading tasks. Optional, ungraded bonus reading points toward WSET Levels 3 and 4. Following Section V, medals reward evidence of learning rather than streaks, and there is no leaderboard: three of the seven quiet survey respondents feared being judged, and a ranking would recreate the table they are trying to get comfortable at.
 
 ## The Tasting Sheet
 
-*Status: built and deployed (November 2026).*
-
-The tasting sheet is the center of Level 1. It has four lines and two columns (Table 4). Each line asks about one part of the wine, and each has a column for "What I sense," in the learner's own words, and a column for "Common words people use." The two columns came directly from critique point 2: a learner's "this feels really heavy" is not wrong, and the shared word "full-bodied" sits next to it rather than replacing it.
-
-**Table 4**
-
-*Structure of the VinoSim Tasting Sheet*
-
-| Line | What it asks | What I sense (learner's words) | Common words people use | Judged? |
-|---|---|---|---|---|
-| 1. Appearance | Colour and depth | e.g., "dark, almost purple" | white, rosé, red; pale, medium, deep | No |
-| 2. Nose | What family of smells | e.g., "like cherries and a bit of smoke" | fruit, flowers, spice, oak, earth | No; there is no right answer |
-| 3. Palate | Acidity, tannin, body, and so on, with an optional "because…" | e.g., "my gums feel tight" | acidity, tannin, body, sweetness, alcohol | Yes: at least one structure word tied to the sensation it refers to |
-| 4. Like it? | Do I like it, why, and would I drink it again | e.g., "too drying for me, but nice with food" | (personal) | No |
-
-*Note.* This is the author's own simplified sheet. It is not the WSET Systematic Approach to Tasting, which may not be reproduced without WSET's written permission.
-
-The sheet's first three lines match the three parts of WSET's Level 1 tasting framework (appearance, nose, palate; WSET, 2022). An earlier version used a fourth line taken from Level 2, a conclusion rating quality (WSET, 2026). I replaced it with "Do I like it? Why?" for two reasons. Judging quality is a Level 2 skill that beginners have little basis for, and saying whether you like a wine, and why, is the sentence most likely to be useful at a dinner table. It also gives the learner a talking point that belongs to them.
-
-A sheet counts as complete when all four lines are written in the learner's own words and the palate line uses at least one structure word (acidity, tannin, body, sweetness, or alcohol) together with the sensation it refers to, for example "my gums feel tight, so I think tannin." Aroma and liking are never graded. This standard is lighter than my earlier rule, which required two of acidity, tannin, and body. One honest link between a feeling and a word is the step my survey showed people missing; asking for two made the sheet feel like a test. The optional "because…" field on the palate line invites a cause ("because red wine ferments with the skins") without requiring it, in response to critique point 1.
-
-## The Tutor
-
-*Status: built and deployed: both modes, retrieval, the four-step interface, the sheet beside the chat, and the revised tone rules.*
-
-The tutor (Figures 3 and 4) is a chat with two modes. In correction mode, the learner describes what they notice or asks a question, the back end retrieves the four most similar notes from the knowledge base, and the model answers from those notes and lists the ones it used. In roleplay mode, the learner chats with a friendly sommelier character to practise speaking up; nothing is retrieved and nothing is graded.
-
-**Figure 3**
-
-*Tutor Introduction Screen*
-
-![Tutor introduction screen](figures/fig3-tutor-intro.png){width=2.2}
-
-*Note.* The opening screen reads "Take your time. I'm listening." The "Read a label" button opens the label scanner. [[TO ADD: source and license of the portrait photo on this screen]]
-
-**Figure 4**
-
-*Tutor Chat With the Four Steps*
-
-![Tutor chat with four steps](figures/fig4-tutor-chat.png){width=2.2}
-
-*Note.* The step bar shows Look, Smell, Taste, and Conclude, with Chinese labels. The learner wrote "It's red," and the tutor built on that answer, then moved to Step 2 (Smell). "Tannins" is a tappable term.
-
-The four steps at the top of the chat match the four lines of the sheet. When the learner finishes one step, the tutor moves to the next. This is scaffolding in the sense of Wood et al. (1976): the tutor holds the structure of the task while the learner supplies the content. In Figure 4, the learner offers only "It's red." The tutor accepts that, adds one piece of vocabulary (ruby), and asks what the wine feels like on a sip. It does not correct or lecture.
-
-Two rules govern the tutor's tone, both from critique point 2. It never calls an aroma wrong; instead it says something like "many people describe it that way; others say…" And on the palate line, where there is shared vocabulary, it asks where the learner feels the sensation before offering a word. A good answer to "it feels dry" links dryness to tannin and says where you feel it, on the gums and the inside of the cheeks. A weak answer just says "high tannin" and leaves the learner with nothing to check against. These rules are part of the current build; the system prompts in the running back end do not yet state them explicitly. [[TO ADD: update after the 11/18 build — confirm the tone rules are in the tutor's prompts]]
-
-I rejected one feature outright: memorized lines. Several survey respondents asked for a sentence they could say to get through the night. A memorized line might work once, but it teaches nothing that transfers to the next bottle, and it would turn the app into a script rather than a tutor.
-
-## The Quiz
-
-*Status: built and deployed: practice by level, both level exams with a review of every answer, label tasks, and label scanning.*
-
-The quiz has two kinds of item, both shown one at a time (Figures 5 and 6). The label card shows a real wine label and asks the learner to pick three true facts from six. On the Château Margaux label, the correct facts are the producer (Château Margaux), the region (Bordeaux), and the style (full-bodied); the distractors are a 2020 vintage, the Pinot Noir grape, and 13.5% alcohol. Bank items are single-answer multiple-choice questions with a photo and immediate feedback. Figure 6 asks how orange wine gets its color; the answer is that white grapes ferment on their skins. That question stays in practice only and is not used in exams.
-
-**Figure 5**
-
-*Quiz Label Card*
-
-![Quiz label card](figures/fig5-quiz-label-card.png){width=2.2}
-
-*Note.* The learner selects three correct facts about the Château Margaux label. [[TO ADD: source of the label image and whether permission is needed to show it]]
-
-**Figure 6**
-
-*Quiz Question Bank Item*
-
-![Quiz question bank item](figures/fig6-quiz-bank.png){width=2.2}
-
-*Note.* One question at a time, with a photo and immediate feedback. Practice item; not used in level exams.
-
-Building the quiz taught me that a correct click is not a finished sheet. "What do tannins feel like?" links a feeling to a word and supports the goal directly. "What grape is red Burgundy?" is useful background, but a high score on questions like it says nothing about whether a learner can describe a glass. That question is now tagged Level 2. For Level 1, I added sensation items (what a structure word feels like) and cause items (why a wine feels that way), which respond to critique point 1.
-
-The question bank was expanded on November 14, 2026. Level 1 has 65 multiple-choice questions, including 12 sensation items (10 new, 3 of them about acidity) and 13 cause items. Level 2 has 95 multiple-choice questions. Ten open tasting prompts, such as "Do you like this wine? Say why or why not in one sentence," are kept in a separate table with example answers and guidance, because they have no correct answer and must never be graded. The share of questions per learning outcome follows the WSET exam weighting (Appendix B). All questions are original, written for VinoSim rather than copied from WSET materials.
-
-The level exams follow the WSET formats for now: 30 questions with a 70% pass mark for Level 1, and 50 questions with a 55% pass mark for Level 2, drawn per learning outcome to match the weighting. These settings are provisional, and there is no time limit yet. [[TO ADD: final exam settings (question count, pass mark, time limit) after the 11/18 build]] One known gap: the two quiz items in the redesigned screens are front-end sample data, and the back-end bank is not yet connected to that interface.
-
-## Study
-
-*Status: built.*
-
-Study holds short articles, such as "What are tannins?" and "A little guide to Bordeaux" (Figure 2). Articles are ranked for each learner using a learner profile (described below), so topics the learner has struggled with in the tutor appear first. Reading is optional; the articles exist so that a learner who meets a new word in the tutor or quiz can look it up in a minute.
-
-## Cellar as a Portfolio
-
-*Status: built. Bottles are saved on the device; tasting sheets are saved on the server.*
-
-The Cellar is a personal record of bottles the learner has tried, with name, grape, region, year, notes, and a rating (Figure 2, right). In the current build, entries are stored in the browser on the learner's own device. I treat the Cellar as a learning portfolio: over time it holds the learner's own descriptions, which they can look back on. Completed tasting sheets appear in the Cellar under "Tasting notes," each marked complete or not, so the six sheets required for the Level 1 medal become a visible record of progress (Figure 3).
-
-## Age Gate and Responsible Drinking
-
-*Status: built and deployed (November 2026).*
-
-Before any tasting content, the app asks the user to confirm that they are of legal drinking age, which is 21 in the United States. WSET's Level 1 specification takes a similar line: under-age candidates may take the course but may not taste (WSET, 2022). The app also includes a short responsible-drinking note: small sips are enough, and spitting is fine. The gate is a yes/no confirmation that the user is of legal drinking age where they live (21 or older in the United States), shown before any other screen. The note reads: "Tasting is about small sips. Spitting is completely fine, and so is learning without drinking at all." Answering no shows a short page asking the user to come back later. The confirmation is remembered on the device only; no birth date is collected.
-
-## Back-End Architecture
-
-*Status: built and deployed.*
-
-The back end was rebuilt this semester as a Python service; the first commit of the new back end is dated September 23, 2026. It has five main parts.
-
-1. **FastAPI** serves the HTTP endpoints: label scanning, the tutor, quiz retrieval and submission, label decoding, articles, and the learner profile.
-2. **LangGraph** runs the tutor as a state graph that mirrors the old n8n workflow: load the chat history, route by mode, retrieve notes (correction mode only), run the correction or roleplay agent, and save the turn.
-3. **Gemini** provides the models: gemini-2.5-flash for chat and label vision, and gemini-embedding-001 for 768-dimensional embeddings.
-4. **Postgres with pgvector** stores the knowledge notes, chat history, quiz questions, articles, and learner profiles. Notes are searched by cosine similarity using an HNSW index. There is no reranker or keyword search.
-5. **Railway** hosts the service, and the bundled React 19 web client is fitted to phone screens.
-
-Two decisions deserve explanation. First, I kept a compatibility layer of `/webhook/*` endpoints that accept and return the old n8n field names. This let the existing front end keep working unchanged while I replaced everything behind it, which meant I could test the new back end against a known interface. Second, I added a learner-profile loop. After each tutor turn, a background task asks the model to summarize what the turn showed and to list weak and mentioned topics, chosen only from a closed vocabulary of 28 topic names. The chat reply does not wait for this. The stored profile is then used to rank Study articles. The closed vocabulary keeps the profile predictable and easy to inspect, and it prevents the model from inventing topics.
-
-The choice to leave visual low-code tools was practical. Code can be versioned, tested, and changed in small steps, and the question bank can be applied as a repeatable migration. The cost is that the system now depends on my ability to maintain it.
-
-## User Scenario and Workflow
-
-The following scenario describes how a learner moves through the app once the current build is complete. The learner is a composite based on the survey, not a real participant.
-
-1. **Age gate.** A first-year analyst who has a team dinner next week opens VinoSim, confirms they are of legal drinking age, and reads the responsible-drinking note.
-2. **Level 1 begins.** On Home, they see one question and one short note. They answer a few quiz items, including "What do tannins feel like?", and get immediate feedback.
-3. **First sheet with the tutor.** At home, they open a bottle of a full-bodied red, chosen by style from the app's list. In the tutor, they go through look, smell, taste, and conclude. On the palate line they write "my gums feel tight," and the tutor asks where they feel it, then offers the word tannin and one cause. They write "my gums feel tight, so I think tannin" and, on the last line, "I like it with food, not on its own."
-4. **Practice continues.** Over the following days, they complete more sheets with different styles and read the Study notes the app ranks for them. Each sheet is saved with a Cellar entry.
-5. **Level 1 medal.** After six sheets, they take the Level 1 exam (30 questions) and pass. The Level 1 medal unlocks Level 2.
-6. **Level 2.** They work through label cards and Level 2 quiz items, complete five label-reading tasks, and pass the Level 2 exam (50 questions).
-7. **Level 2 medal.** The course is complete. The app suggests WSET Level 1 if they want a certificate.
-8. **Optional bonus.** They choose a bonus topic, such as ageing, and explore it without grading.
-
-Table 5 summarizes the same workflow.
+The tasting sheet is the center of Level 1 (Table 5). Each line has the learner's own words next to "common words people use," so a learner's "this feels really heavy" is kept beside the shared word "full-bodied" rather than replaced by it. That layout came from the class critique.
 
 **Table 5**
 
-*Learner Workflow From Age Gate to Bonus Content*
+*The VinoSim Tasting Sheet*
 
-| Step | Screen(s) | What the learner does | Evidence produced | Status |
+| Line | What it asks | Example in the learner's words | Common words people use | Judged? |
 |---|---|---|---|---|
-| 1. Age gate | Age gate | Confirms legal drinking age; reads responsible-drinking note | None | Built |
-| 2. Level 1 practice | Home, Quiz, Study | Answers sensation and cause items; reads notes | Quiz attempts; learner profile | Built |
-| 3. Tasting sheets | Tutor, tasting sheet, Cellar | Writes four-line sheets with tutor support | Six completed sheets | Built |
-| 4. Level 1 exam | Quiz (exam) | Takes 30-question exam | Exam result (pass at 70%, provisional) | Built |
-| 5. Level 1 medal | Progress | Receives medal; Level 2 unlocks | Medal | Built |
-| 6. Level 2 practice | Quiz (label card, bank), Study | Reads labels; answers Level 2 items | Five label-reading tasks | Built |
-| 7. Level 2 exam and medal | Quiz (exam), Progress | Takes 50-question exam; receives medal | Exam result (pass at 55%, provisional); medal | Built |
-| 8. Bonus (optional) | Study, Progress | Chooses ungraded interest topics | Bonus medals | Built; three topics so far |
+| Appearance | Color and depth | "dark, almost purple" | pale, medium, deep; lemon, ruby, garnet | No |
+| Nose | Families of smells | "cherries and a bit of smoke" | fruit, flowers, spice, oak, earth | No |
+| Palate | How it feels, with an optional "because…" | "my gums feel tight" | acidity, tannin, body, sweetness, alcohol | One structure word tied to the sensation |
+| Like it? | Do I like it, and why | "too drying for me, but nice with food" | (personal) | No |
 
-*Note.* Status as of November 19, 2026. Each step was checked on the deployed service in the walkthrough described in Section VII.
+*Note.* The author's own simplified sheet, not the WSET Systematic Approach to Tasting.
+
+The first three lines match the WSET Level 1 tasting framework. An earlier fourth line, a conclusion about quality from Level 2, was replaced with "Do I like it? Why?", because judging quality is a skill beginners have little basis for, and whether you like a wine is the sentence most useful at a dinner table.
+
+**After saving.** When the learner saves a sheet, three things appear (Figure 4). First, a completeness score out of six (look, smell, taste, a structure word, the feeling behind it, and liking), shown at once, together with the Level 1 progress. Second, a short note from the tutor, fetched separately so a slow model never delays the save. It quotes the learner's own words, says specifically what worked, and, if something is missing, invites them to add the one most useful piece now. Third, a button to talk more with the tutor about that sheet. These follow the feedback and self-efficacy rationale in Section V: the note praises what the learner did, never the person, and never judges an aroma.
+
+**Editing and re-tasting.** From the Cellar, a learner can edit a sheet or re-taste a wine. A re-taste opens a fresh sheet for the same wine and keeps the earlier notes hidden until the new sheet is saved, so the learner tastes it fresh. After saving, the two can be compared, and the tutor's note names one concrete thing that grew. Level 1 counts each wine once, so re-tasting adds practice without inflating progress.
+
+**Figure 4**
+
+*The Tasting Sheet After Saving*
+
+[[FIGURE: left, an incomplete sheet scoring 4/6 with the tutor's note; right, a re-tasted wine scoring 6/6 with the earlier tasting open. To be retaken on the live app once the Gemini quota resets.]]
+
+*Note.* Left: an incomplete sheet (palate line "nice") scores 4 of 6, and the tutor quotes the learner's words and suggests adding a structure word. Right: a re-tasted wine scores 6 of 6, with the earlier tasting available for comparison. Test account, November 20, 2026.
+
+## The Tutor
+
+The tutor has two modes. In correction mode, the back end retrieves the four notes most similar to the learner's message and the model answers from them. In roleplay mode, the learner chats with a friendly dinner guest to practise a few sentences; nothing is retrieved or graded. Four steps at the top of the chat match the four lines of the sheet, and the tutor asks about one at a time. In both modes, the prompts set the same tone: start from the learner's words, quote them, praise what they did rather than the person, give at most one next step, keep replies short, and never call an aroma or a preference wrong. On the palate line the tutor asks where the learner feels a sensation before offering a word, and it explains that "dry" can mean not sweet or the drying feeling of tannin. One feature was rejected outright: a memorized line to get through the night, which several survey respondents asked for. A line gets you through tonight, not the next bottle.
+
+## The Quiz and Exams
+
+Quiz items appear one at a time, with immediate feedback. Bank items are single-answer questions, many with a photo. Label cards show a real label and ask for three true facts out of six. Building the quiz taught me that a correct click is not a finished sheet. "What do tannins feel like?" supports the goal directly. "What grape is red Burgundy?" is background, so it moved to Level 2, and Level 1 gained sensation items (what a word feels like) and cause items (why a wine feels that way). The bank holds 65 Level 1 and 95 Level 2 original questions, weighted by WSET learning outcome, plus 10 ungraded open prompts kept separately (Appendix B). The level exams follow the WSET formats for now: 30 questions with a 70% pass mark for Level 1, and 50 with 55% for Level 2, with a review of every answer.
+
+## Study, Cellar, and the Age Gate
+
+Study holds short articles such as "What are tannins?" Articles are ordered by a learner profile: after each tutor turn, a background step records weak and mentioned topics from a closed list of 28, so topics the learner struggled with appear first. The Cellar keeps the bottles the learner has tried and all their tasting sheets, with a label for each re-tasting, so the sheets become a visible portfolio. Before any tasting content, the app asks the user to confirm they are of legal drinking age (21 in the United States) and shows a note: small sips are enough, and spitting is fine. No birth date is collected.
+
+## Architecture
+
+The first-semester n8n workflows were rebuilt as a Python service (Figure 5). FastAPI serves the endpoints. LangGraph runs the tutor as a small graph: load history, route by mode, retrieve notes (correction only), answer, and save the turn. Gemini provides the chat, vision, and embedding models. Postgres with pgvector stores the notes, questions, sheets, and profiles. Railway hosts the back end, and the Lovable front end runs in the browser. A compatibility layer kept the old front end working while everything behind it was replaced, which let me test the new back end against a known interface. Leaving low-code tools was practical: code can be versioned, tested, and changed in small steps.
+
+**Figure 5**
+
+*System Architecture*
+
+[[FIGURE: Phone (Lovable front end) → FastAPI on Railway → {LangGraph tutor → Gemini chat; sheet check and feedback → Gemini; retrieval → Gemini embeddings + pgvector} → Postgres (notes, questions, sheets, medals, profiles)]]
+
+## A Learner's Path
+
+A first-year analyst has a team dinner next week. They confirm their age, answer a few Level 1 questions, and read a note on tannin. At home they open a full red, chosen by style, and fill in the sheet with the tutor. On the palate line they write "nice," save, and see 4 of 6; the tutor quotes their "deep ruby" and suggests adding a structure word. They add "my gums feel tight, so I think tannin" and save again. Over the next days they taste five more wines, pass the Level 1 exam, and earn the medal. A week later they re-taste the first wine and see that this time they named the acidity too. Level 2 follows with labels and the second exam.
 
 # VII. Implementation, Evaluation, and Iteration
 
-## Methods Used to Evaluate and Iterate
+## Methods
 
-I have used five methods so far. None of them measures learning outcomes, and I say more about that gap at the end of this section.
+Seven methods have shaped the design so far. None of them measures learning, a gap discussed at the end of this section.
 
-### The Author's Survey
+1. **Designer probe (Semester 1).** Three bottles, beginner-style descriptions, replies compared with published notes. It produced the rule that the tutor must address any smell the learner names (Section III).
+2. **Survey of 10 (Semester 2).** It confirmed the core gap, supported a short written sheet, argued against leaderboards, and surfaced the request for memorized lines, which I declined (Section III).
+3. **Class critique (November 11, 2026).** Three points changed the design: help learners understand *why* a wine feels as it does; respect personal perception rather than chase a standard answer; and focus on the social situation.
+4. **Retrieval test.** For "Why does this red wine feel so drying?", the live index ranked Tannin first (0.747), then Order of checks on the palate, Acidity, and Body. This is a check on one query, not a systematic evaluation.
+5. **Question-bank validation.** Pool shares are within two percentage points of the WSET weights for every learning outcome; the migration was applied twice on a scratch database with no change in row counts; every question has four options and one correct answer, spread evenly across letters (Appendix B).
+6. **Live walkthrough (November 19, 2026).** A fresh test account went through the whole path on the deployed service, from the age gate to both medals. It found four defects, all fixed that week.
+7. **Prompt testing (November 20, 2026).** The tutor note was tested on sheets that were incomplete, complete, re-tasted, and written in Chinese, and the tutor on an unsure learner and a mismatched word.
 
-The 10-person survey (Section III and Appendix A) was the main input from potential users. It confirmed the core gap (five of 10 named the tannin sensation without the word), shaped the decision to make the sheet short and written (seven of 10 would fill one in), supported the decision against leaderboards (three of the seven quiet respondents fear judgment), and surfaced the request for memorized lines, which I declined. Because it is a convenience sample of people I know, I used it to find problems and test assumptions, not to estimate how common anything is.
+## The Biggest Iteration: Between Semesters
 
-### Class Critique
-
-The Capstone Thesis Class critique on November 11, 2026, produced the three points described in Section II. Each led to concrete changes. Point 1 (understand why a wine feels a certain way) led to three-part word cards, an optional "because…" on the palate line, and cause questions in the bank. Point 2 (respect personal perception) led to the two-column sheet, ungraded aroma prompts, the tutor's rule never to call an aroma wrong, and the removal of the two-word palate standard. Point 3 (focus on the social situation) led me to add a third Level 1 outcome, understanding others and responding, which I moved to future work because it could not be built and evaluated this semester.
-
-### Retrieval Test
-
-To check that correction mode retrieves the right notes, I ran a test query on the live index: "Why does this red wine feel so drying?" The four most similar notes by cosine similarity were Tannin (0.747), Palate order (0.718), Acidity (0.688), and Body (0.686). Tannin ranked first, which is the correct note for a drying sensation, and the other three are plausible neighbors. This is a sanity check on one query, not a systematic evaluation. The scores between the first and fourth notes are close, and there is no reranker, so a differently phrased question could rank them differently. [[TO ADD: optional — results of a few more test queries, if you run them]]
-
-### Question-Bank Validation
-
-I set a blueprint for the expanded bank: the share of questions per learning outcome should follow the WSET exam weighting (Level 1: 6, 18, and 6 of 30; Level 2: 5, 4, 19, 12, 6, and 4 of 50; WSET, 2022, 2023), and Level 1 should include sensation and cause items. The bank was then checked against that blueprint (Appendix B). The pool shares are within two percentage points of the WSET shares for every learning outcome. The migration was applied twice on a scratch database to confirm that it is idempotent (row counts did not change on the second run), that every question has four options and exactly one correct answer, and that correct answers are spread across the letters (Level 1: A 16, B 17, C 17, D 15; Level 2: A 23, B 26, C 24, D 22). Two questions needed decisions: the red-Burgundy grape question is tagged Level 2, and the orange-wine question, which falls outside both WSET ranges, stays in practice only and is not used in exams.
-
-### Migration From n8n to a Local Stack
-
-The move from six n8n workflows to a FastAPI and LangGraph service was itself an iteration. The compatibility layer allowed a direct comparison: the old front end, unchanged, could call the new back end through the same `/webhook/*` routes. After the migration, the model and embedding versions were updated (gemini-2.5-flash for chat and vision, gemini-embedding-001 at 768 dimensions), the bundled web client was fitted to phone screens, and the service was deployed to Railway. [[TO ADD: any problems you hit during migration and how you verified that each endpoint behaved like the old workflow]]
-
-### Live Walkthrough
-
-After deployment, I walked through the whole learner path on the live service with a fresh test account: age gate, a tasting sheet written with the tutor, five more sheets, the Level 1 exam, the Level 1 medal, five label tasks, the Level 2 exam, and the Level 2 medal. Repetitive steps (sheets two to six, most label tasks) were entered directly through the API; the first sheet, the Level 1 exam, the last label task, and every progress screen were done in the app. The walkthrough found four problems, all fixed the same week (Table 6). It tests the software, not learning.
-
-**Figure 3**
-
-*Live Walkthrough of the Learner Path*
-
-![Walkthrough: tasting sheet, exam result, path page, Cellar notes](figures/fig3-walkthrough.png){width=6}
-
-*Note.* From left to right: the tasting sheet after saving, the last label task with the Level 2 medal notice, the path page with both medals, and the learner's tasting notes in the Cellar. Screens from the deployed app, November 19, 2026.
+The largest change was not a feature. The first semester designed for an adult self-learner at home and explicitly avoided a syllabus. The survey showed a more specific moment, the work dinner, and the critique asked for structure that explains why a wine feels as it does. The learner narrowed to early-career professionals, and the scope grew to two levels mirroring WSET, because a recognized content scope gives learners a path forward and gives me a checkable boundary for the content. The first semester's commitments survived the change: private practice, a quiet interface, a grounded tutor that admits gaps, and the learner doing the thinking.
 
 ## Feature-by-Iteration Matrix
-
-Table 6 lists the main design features, what happened when each was implemented or tested, and the specific iteration that followed.
 
 **Table 6**
 
@@ -493,99 +377,66 @@ Table 6 lists the main design features, what happened when each was implemented 
 
 | Specific design feature | Implementation result | Specific iteration |
 |---|---|---|
-| Learning goal | "Speak like an expert" did not fit the research (experts do not have better noses) or the time users have | Redefined as a four-line tasting sheet written in about five minutes without hints (backward design) |
-| Palate-line standard | Requiring two of acidity, tannin, and body tied to a sensation made the sheet feel like a test; critique point 2 questioned a single "standard answer" | Replaced by one structure word (acidity, tannin, body, sweetness, or alcohol) tied to the sensation it refers to; aroma and liking stay ungraded |
-| Fourth line of the sheet | A quality conclusion, taken from WSET Level 2, asked beginners for a judgment they had little basis for | Changed to "Do I like it? Why?", which matches Level 1's three-part framework plus a personal talking point |
-| Sheet layout | A single answer field per line implied one correct description | Two columns: "What I sense" and "Common words people use" |
-| Tutor tone on aromas | Critique point 2: tasting differs by person; a classmate noted "this wine feels really heavy" is not wrong | The tutor never calls an aroma wrong ("many people describe it that way; others say…"); aroma prompts are ungraded |
-| Explaining why (critique point 1) | Vocabulary alone did not explain why a wine feels as it does | Three-part word cards (sensation → word → cause); optional "because…" on the palate line; 13 cause questions in Level 1 |
-| Memorized lines | Several survey respondents asked for a line to get through the night | Deliberately not built: a line gets you through tonight, not the next bottle |
-| Quiz scope | Building the quiz showed that a correct click is not a finished sheet; background items did not serve the goal | Background items moved to Level 2 (for example, the red-Burgundy grape question); sensation and cause items added to Level 1 |
-| Question bank | The back-end bank had five multiple-choice questions and a few label questions | Expanded to 65 Level 1 and 95 Level 2 questions plus 10 ungraded prompts, weighted to WSET exam shares and validated on a scratch database |
-| Back end | Six n8n workflows were hard to version, test, and change in small steps | Rebuilt as FastAPI + LangGraph + Gemini + Postgres/pgvector, with a webhook compatibility layer, deployed to Railway |
-| Personalization | Study articles were the same for everyone | Learner-profile loop: each tutor turn is distilled into weak and mentioned topics from a closed vocabulary, used to rank articles |
-| User interface | The v0 front end had no visible structure for tasting | Redesigned mobile screens; the tutor shows four steps that match the sheet |
-| Medal design | A certificate would imply an accreditation VinoSim does not have | In-app medals tied to exams and sheets (six sheets for Level 1; five label tasks for Level 2); no leaderboard; no streaks |
-| Age gate | The app had no check on drinking age | Yes/no age gate and responsible-drinking note shown before any other screen; built and deployed |
-| Palate check | In the walkthrough, a palate line of "nice" was correctly marked incomplete (no structure word); "high acidity, my mouth watered" was marked complete | Kept as built; the sheet names the missing part so the learner knows what to add |
-| Level exams | Both exams ran end to end on the live service (Level 1: 28/30, pass; Level 2: 44/50, pass), with a review of every missed question | Kept as built; pass marks stay provisional until real learners take them |
-| Medals | Medals were awarded at the right moment: Level 1 after the exam plus six sheets, Level 2 after the exam plus the fifth label task; Level 2 stayed locked until then | The medal notice was pushed off-screen on narrow phones; fixed so it stays centred |
-| Tutor in deployment | The live tutor failed with a server error, while the same code worked locally | Cause found in the logs (a newer model library called an API version that rejects system instructions); the version was pinned and errors are now logged |
-| Tutor wording | In the walkthrough the tutor said "the knowledge snippets I have don't…", exposing its retrieval to the learner | Prompt changed: the tutor never mentions snippets or sources and falls back to general beginner guidance |
-| Level names | The first names ("Talk about the glass," "Read the bottle") read as informal next to the WSET framing | Renamed "Foundations of Tasting" and "Grapes, Regions and Labels" |
-| Listening and responding (critique point 3) | Could not be designed and evaluated within the semester | Recorded as Level 1 LO3, moved to future work |
+| Target learner and scope | S1 home self-learner with no syllabus; the survey pointed to work dinners, and the critique asked for structure | Narrowed to early-career professionals; two levels mirroring WSET Levels 1 and 2 |
+| Learning goal | "Speak like an expert" did not fit the research or the time learners have | Redefined by backward design as a four-line sheet in the learner's own words |
+| Tutor and named smells (S1) | The probe showed the tutor dropping a named "green leaf" smell | Rule: address every named smell, or say the notes do not cover it |
+| Palate standard | Requiring two structure words made the sheet feel like a test | One structure word tied to its sensation; aroma and liking never judged |
+| Fourth line | A quality conclusion asked beginners for a judgment they could not yet make | "Do I like it? Why?" |
+| Sheet layout | One field per line implied one correct description | Learner's words beside "common words people use" |
+| Explaining why (critique 1) | Vocabulary alone did not explain causes | Word cards (sensation, word, cause); optional "because…"; 13 cause questions |
+| Quiz scope | A correct click is not a finished sheet | Background items moved to Level 2; sensation and cause items added to Level 1 |
+| Back end | n8n workflows were hard to version and test | Rebuilt as FastAPI, LangGraph, Gemini, and pgvector on Railway |
+| Live tutor (walkthrough) | Server error in deployment only | A newer model library used an API version that rejects system instructions; version pinned, errors logged |
+| Tutor wording (walkthrough) | The tutor said "the knowledge snippets I have don't…" | Prompt: never mention snippets or sources |
+| Medal notice and path layout (walkthrough) | Notice pushed off-screen; bonus cards squeezed on narrow phones | CSS fixed and redeployed |
+| Feedback after saving | Saving gave only a rule-based list of what was missing; learners did not see what they did well | Completeness score plus a short tutor note that quotes the learner; the note loads after the save |
+| Generic praise in the note | Even when told not to, the model wrote "great" or "很棒" | The note is checked for stock praise and rewritten once if found |
+| Re-tasting | The only way to revise a sheet was to overwrite it, losing evidence of growth | Edit and re-taste from the Cellar; earlier notes hidden until saved; each wine counts once |
+| Listening and responding (critique 3) | Could not be designed and evaluated this semester | Level 1 LO3, moved to future work |
 
-*Note.* Rows from "Palate check" down come from the live walkthrough on November 19, 2026, run by the author with a test account. They show that the features work as designed, not that they help anyone learn.
+*Note.* The walkthrough and prompt tests were run by the author with test accounts. They show that features work as designed, not that they help anyone learn.
 
 ## What Has Not Been Evaluated
 
-No learning-outcome study with users has been run. I do not yet know whether using VinoSim helps anyone write a better tasting sheet, feel more confident at a dinner, or say anything at all. The survey describes the problem; the critique improved the design; the retrieval test and question-bank checks show that parts of the system work as intended. None of these is evidence of learning.
-
-The planned next step is a small before-and-after check. A few people will taste the same bottle and write a sheet before using the tutor, then write another after. I will compare the two sheets against the completion standard: all four lines written in the learner's own words, and a palate line with at least one structure word tied to the sensation it refers to. With so few people, one bottle, and no comparison group, the check cannot support conclusions. Its purpose is to find obvious problems, for example a tutor step that confuses people or a sheet line that nobody understands, before a larger evaluation. [[TO ADD: results of the before-and-after check, if you run it before submission: number of participants, date, and what you observed, reported as counts]]
+No learning-outcome study with users has been run. I do not yet know whether VinoSim helps anyone write a better sheet or feel more confident at a dinner. The probe and survey describe the problem, the critique improved the design, and the technical checks show that the system works as intended. None of these is evidence of learning. Section IX describes the planned study.
 
 # VIII. Conclusion and Reflection
 
 ## How the Project Meets Its Goals
 
-VinoSim set out to help beginners at a dinner table describe a glass of wine in their own words. Measured against that goal, the project has a clear design and a partial build. The learning goal is specific and checkable: a four-line sheet, written in about five minutes, with at least one structure word tied to a real sensation. Each feature traces back to that goal or to research. The tutor scaffolds the sheet step by step. The quiz practises the link between sensation, word, and cause. The medals reward completed sheets and passed exams. The back end grounds the tutor in notes I can check, and the question bank follows the WSET content scope closely enough that a learner could move on to a real course.
-
-What I cannot yet say is whether it works for learners. The design responds to the problem as the survey and the research describe it, but the evidence that it helps will come only from the evaluation in Section IX.
+VinoSim set out to help beginners describe a glass of wine in their own words. The project now has a specific, checkable learning goal, a deployed app built around it, and a design in which each feature traces back to that goal or to research. The tutor scaffolds the sheet, the quiz practises the link between sensation, word, and cause, the feedback after saving shows learners what they already did well, and the medals reward evidence rather than activity. Whether it works for learners remains open until the study in Section IX.
 
 ## Insights and Lessons
 
-**A correct click is not a finished sheet.** Building the quiz made me separate two things I had treated as one: knowing a fact about wine and being able to describe a wine. A learner who knows that red Burgundy is Pinot Noir may still have nothing to say about the glass in front of them. This changed which questions belong in Level 1 and made the tasting sheet, not the quiz score, the evidence of learning.
+**A correct click is not a finished sheet.** Knowing a fact about wine and being able to describe a wine are different, and only the second is the goal. This changed which questions belong in Level 1 and made the sheet the evidence of learning.
 
-**WSET's entry levels do not test tasting.** I expected the established qualifications to cover the skill I cared about. Reading the specifications showed that Levels 1 and 2 assess knowledge by multiple choice only. That finding gave VinoSim its position. It also kept me modest: I am building a practice tool next to a qualification system, not a replacement for it.
+**The entry levels do not test tasting.** Reading the WSET specifications gave VinoSim its position, and kept it modest: a practice tool next to a qualification, not a replacement.
 
-**Respecting perception and calibrating vocabulary pull in different directions.** The critique made me see a tension I had not noticed. Shared words are only useful if people use them in roughly the same way, which is what experts do (Croijmans & Majid, 2016). But beginners who are told their perceptions are wrong stop talking, which defeats the purpose. My resolution is partial: aroma and liking are never judged; the palate line, where vocabulary is most shared, asks for one honest link between a feeling and a word. I expect this balance to keep shifting as I learn more from users.
+**Respecting perception and sharing vocabulary pull in different directions.** Shared words are useful only if people use them alike, yet beginners told they are wrong stop talking. My resolution is partial: aroma and liking are never judged, and only the palate line asks for one honest link between a feeling and a word.
 
-**Refusing a shortcut can be a design decision.** The request for memorized lines was the most direct thing users asked for, and I said no. A script would have met the immediate need and taught nothing. I found it useful to state the refusal in the design principles, so that I would not drift back toward it under pressure.
+**Encouragement has to be specific to be believed.** Telling a model to "be positive" produced stock praise. What builds confidence is pointing at the learner's own words and showing what they did. That had to be enforced in code as well as in the prompt.
 
-**The definition stage never really ended.** I rewrote the learning goal more often than any piece of code. Each version made the app smaller and more concrete. Looking back, the best use of my time was the work that made the goal checkable, because it made every later decision easier.
+**The definition stage never really ended.** I rewrote the learning goal more often than any piece of code, and each version made the app smaller and more concrete.
 
 ## Contribution to the Field
 
-The contribution is modest and specific. VinoSim shows one way to turn a consumer-education problem, documented mostly by industry surveys, into a narrow learning goal grounded in research on expertise, and to build a scaffolded, retrieval-grounded tutor around it. Its clearest idea is to target the skill that entry-level wine qualifications teach but do not assess, and to make the learner's own written description the evidence of learning. For educational technology more broadly, it is a small case study in using a large language model as a tutor with a defined end product, grounded content, and explicit limits on what it may judge. Whether the approach helps learners is still an open question.
+The contribution is modest and specific. VinoSim shows one way to turn a consumer-education problem, documented mostly by industry surveys, into a narrow learning goal grounded in research on expertise, and to build a scaffolded, retrieval-grounded tutor around it. Its clearest idea is to target the skill that entry-level wine qualifications teach but do not assess, and to make the learner's own written description the evidence of learning. For educational technology, it is a small case study in using a language model as a tutor with a defined end product, grounded content, and explicit limits on what it may judge.
 
 # IX. Future Directions
 
-## Listening and Responding (LO3)
+**Outcome study.** The next step is a small design check, planned before any data are collected (Appendix D). About five people take part: at least two who feel outside wine talk and at least two who already taste with a grid. With one red wine and about 20 minutes each, they describe the wine with the app closed, use the tutor on their own sentence, and describe it again. Each before-and-after pair is marked as a hit (a structure word tied to a sensation they can point to, where the first description had none), a partial, or a miss, using rules fixed in advance. A short questionnaire also asks who the screen seems to be for. Five people can show whether the goal is observable, not that it holds for wine drinkers in general. A larger study would add the full four-line sheet, several wines, a second scorer, and a follow-up after a real event.
 
-Critique point 3 asked me to focus on the social situation: helping someone outside the conversation understand it and add a few words. That is Level 1's third outcome, and it is the one closest to the original problem. It will need different activities from the sheet, such as hearing or reading what others say about a wine and practising a short response. Roleplay mode is a starting point. Assessing this outcome will also be harder than assessing a written sheet.
+**Fading the scaffold.** Support should be withdrawn as the learner improves (Collins et al., 1989), for example by asking the learner to write each line before the tutor responds. The real test is a new bottle without the tutor.
 
-## Fading the Scaffold
+**Listening and responding (LO3).** The third Level 1 outcome, understanding others and adding a few words, is closest to the original problem. Roleplay mode is a starting point.
 
-The tutor currently gives the same support every time. Following Collins et al. (1989), support should be withdrawn as the learner improves, for example by asking the learner to write each line before the tutor responds, or by removing step prompts after a few sheets. The real test is whether a learner can write the sheet for a new bottle without the tutor.
-
-## Bonus Levels
-
-Optional bonus content in the direction of WSET Levels 3 and 4 (terroir, ageing, more regions) is still being refined. It should stay ungraded and chosen by the learner, in line with the medal design. [[TO ADD: bonus topics and timeline]]
-
-## Outcome Evaluation With Real Users
-
-The most important next step is to find out whether VinoSim helps. After the small before-and-after check, a stronger study would recruit people from the target group rather than friends, use several wines, compare sheets written with and without the app, and ask about confidence at a real event some time later. It would also be worth testing whether the completion standard can be scored reliably by two different readers.
-
-## Reviewing the Question Bank With Real Learners
-
-The quiz now draws from the full bank, by level, and the exams sample questions per learning outcome. The next step is to look at which questions real learners miss most often and rewrite the ones that are unclear rather than hard.
-
-## Real-World Adoption Factors
-
-Several factors would matter if VinoSim were released beyond a class project.
-
-- **Legal drinking age.** The age gate needs a clear design and must reflect the law where the app is used.
-- **Responsible drinking.** Tasting practice should continue to encourage small amounts and spitting, and the app should never reward drinking more.
-- **WSET trademark and the SAT.** VinoSim must not imply affiliation with WSET, use its branding, or reproduce the SAT without written permission. If the app grew, it would be worth asking WSET whether a formal relationship is possible.
-- **Content accuracy.** Notes and questions need regular review, and someone has to be responsible for corrections when wine facts or regulations change.
-- **Images and labels.** The quiz uses a real wine label, and the tutor screen uses a portrait photo. Their sources and permissions need to be checked before any public release.
-- **Cost of model calls.** Every tutor turn calls a language model, and the learner-profile loop adds a second call. At scale, this cost would need a budget or a cheaper design.
-- **Privacy of learner profiles.** The profile stores a summary of what each learner struggles with. It should be minimal, explained to users, deletable, and never shared.
+**Adoption factors.** A public release would need an age gate that reflects local law, continued encouragement of small amounts, no implied affiliation with WSET, regular review of notes and questions, cleared rights for the label and portrait images, a budget for model calls (each saved sheet adds one or two), and a minimal, deletable learner profile.
 
 # AI Acknowledgement
 
-[[TO ADD: align this statement with the wording required by your thesis section's AI policy; the policy text is not in the public program guide]]
+[[TO ADD: align this statement with the wording required by your thesis section's AI policy]]
 
-I used Claude (Anthropic) throughout this project. It helped me draft and edit the text of this paper and my presentation scripts, organize my notes, and check references against publishers' pages and Crossref. It also helped write code for the VinoSim back end and web client, the database migrations, and the content of the question bank, which I specified through a blueprint. Inside the product, Google's Gemini models generate the tutor's replies, read wine labels, create embeddings for retrieval, and summarize each tutor turn into the learner profile. The redesigned screens were first generated with Lovable. An AI note-taker in Notion summarized the class critique; because that summary contained wrong numbers, I did not use any of its figures. I reviewed and revised all AI-assisted text, code, and content, and I am responsible for the final work. All data reported in this paper come from the original sources or from my own survey and tests. [[TO ADD: confirm the list of AI tools, including any used in the 1st semester (for example Google AI Studio for the v0 front end)]]
+I used Claude (Anthropic) throughout this project to draft and edit the text of this paper and my presentation scripts, organize notes, check references, and write code for the back end, the web client, the database migrations, and the question bank, which I specified through a blueprint. In the first semester, I used an AI writing tool to organize the paper, and the v0 front end was generated with Google AI Studio. Inside the product, Google's Gemini models write the tutor's replies and sheet notes, read labels, create embeddings, and summarize tutor turns into the learner profile. The redesigned screens were first generated with Lovable. An AI note-taker summarized the class critique; its numbers were wrong, so I used none of them. I reviewed and revised all AI-assisted text, code, and content, and I am responsible for the final work. All data in this paper come from original sources or from my own survey and tests.
 
 <!-- pagebreak -->
 
@@ -726,7 +577,60 @@ This is the author's own simplified sheet, not the WSET Systematic Approach to T
 
 *Note.* A sheet is complete when all four lines are written in the learner's own words and the palate line uses at least one structure word together with the sensation it refers to. Practice wines are chosen by style: crisp white, oaked white, rosé, light red, full red, sparkling. Small sips are enough, and spitting is fine.
 
-# Appendix D: Development Plan
+# Appendix D: Planned User Study
+
+This protocol was written in October 2026, before any data were collected, and has not yet been run. It predates the four-line sheet, so it asks for one sentence rather than a full sheet; Section IX describes how it will be extended.
+
+**Participants and setting.** About five adults of legal drinking age: at least two who feel outside wine talk and at least two who already taste with a grid or have taken a class, screened with questions 1 to 4. One red wine, tasted by the author beforehand to confirm a drying or acid cue. About 20 minutes per person. Participation is voluntary, ungraded, and can stop at any time; notes are taken only with consent, and nothing is recorded without it.
+
+**Procedure.** The participant describes the wine with the app closed, then types that sentence into the tutor's correction mode and reads the reply, then describes the wine again. Only then do they see the home screen and answer the audience questions. The structure word is never said before question 9.
+
+**Table D1**
+
+*Questionnaire*
+
+| # | When | Question | What is counted |
+|---|---|---|---|
+| 1 | Before tasting | How often do you drink wine? | Screening |
+| 2 | Before tasting | When others talk about a wine, I usually stay quiet / say whether I like it / try to describe it / use words like tannin | Screening |
+| 3 | Before tasting | I feel outside wine culture and would like a way in (yes / somewhat / no) | Group: "wants in" |
+| 4 | Before tasting | I already taste with a grid or have taken a class (yes / no) | Group: "already skilled" |
+| 5 | Glass in hand, app closed | In a sentence you would say at the table, what is this wine doing? | Pretest |
+| 6 | Same moment | If you point to one sensation, what is it? | Cue available before help |
+| 7 | After the tutor's reply | Describe the same wine again in one or two sentences | Compared with question 5 |
+| 8 | After | Which one word would you use: acidity, tannin, body, or not sure? | The word |
+| 9 | After | What do you feel that this word points at? | The sensation; required for a hit |
+| 10 | After | If you named a smell, did the reply address it, say its notes did not cover it, or ignore it? | Admitted gaps count; ignored smells do not |
+| 11 | Home screen | Who is this screen for: someone new to wine talk / someone who tastes seriously / both / neither? | Audience check |
+| 12 | Same screen | The quiet look makes me more willing to type a plain sentence (agree / not sure / disagree) | Audience check |
+| 13 | Last | What would you change so you would use this with a glass in hand? | Design notes |
+
+**Marking rules, fixed in advance.** *Hit:* question 8 is acidity, tannin, or body, and question 9 names a sensation that fits it (drying or grip for tannin, a watering mouth for acidity, weight for body), where the pretest was vaguer. *Partial:* the word without the sensation, or the sensation with a word that does not match. *Miss:* the post-test is still only "I like it," or a term with nothing the person can point to. *Not counted:* the participant needed the sample prompt to start, or the author said the word before question 9.
+
+<!-- pagebreak -->
+
+# Appendix E: Semester 1 Designer Probe
+
+In the first semester, the author wrote descriptions the way a beginner speaks for three wines (Penfolds Bin 389, Cloudy Bay Sauvignon Blanc, and Sassicaia) and compared the prototype's correction replies with published tasting language. The author was the only evaluator. The probe tested the design, not learning.
+
+**Table E1**
+
+*Beginner Descriptions and How the Prototype Handled Them*
+
+| Beginner description | Published category | Prototype reply |
+|---|---|---|
+| "Heavy but super smooth" | Full body, polished tannin | Matched |
+| "Mouth water a lot, sour" | Crisp acidity | Matched |
+| "Cooked dark jam" | Cooked rather than fresh fruit | Matched |
+| "Dries my gums but polished" | Present, refined tannin | Matched |
+| "Weird green leaf smell" | A leafy or herbaceous note | Ignored |
+| "Pencil shavings" | Often cedar or graphite in Cabernet notes | Treated as generic oak |
+
+*Note.* The rules taken into the design: the tutor must address every smell the learner names, including by saying its notes do not cover it, and it is most reliable on structure, so structure is where the sheet asks for a shared word.
+
+<!-- pagebreak -->
+
+# Appendix F: Development Plan
 
 Level 1 and Level 2 (front end and back end, including the tasting sheet, level exams, medals, and age gate) were built from November 14 to 18, 2026, and deployed on November 17.
 
