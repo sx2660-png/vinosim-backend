@@ -423,10 +423,41 @@ def list_sheets(user_id: str) -> list[dict[str, Any]]:
         return [_sheet_row(r) for r in cur.fetchall()]
 
 
+# Sheets for the same wine share a key: the wine name, lower-cased with spaces collapsed.
+# A sheet without a name is its own wine.
+_WINE_KEY = "lower(regexp_replace(btrim(wine_name), '\\s+', ' ', 'g'))"
+
+
 def count_complete_sheets(user_id: str) -> int:
+    """Complete sheets counted once per wine, so re-tasting a wine does not add to Level 1."""
     with cursor() as cur:
-        cur.execute("SELECT count(*) FROM tasting_sheets WHERE user_id = %s AND complete", (user_id,))
+        cur.execute(
+            f"""SELECT count(DISTINCT COALESCE(NULLIF({_WINE_KEY}, ''), 'sheet:' || id))
+                FROM tasting_sheets WHERE user_id = %s AND complete""",
+            (user_id,),
+        )
         return cur.fetchone()[0]
+
+
+def get_sheet(user_id: str, sheet_id: int) -> dict[str, Any] | None:
+    with cursor() as cur:
+        cur.execute(f"{_SHEET_SELECT} WHERE id = %s AND user_id = %s", (sheet_id, user_id))
+        row = cur.fetchone()
+        return _sheet_row(row) if row else None
+
+
+def previous_tasting(user_id: str, sheet_id: int) -> dict[str, Any] | None:
+    """The most recent earlier sheet for the same (named) wine, if any."""
+    with cursor() as cur:
+        cur.execute(
+            f"""{_SHEET_SELECT} WHERE user_id = %s AND id <> %s AND {_WINE_KEY} <> ''
+                    AND {_WINE_KEY} = (SELECT {_WINE_KEY} FROM tasting_sheets WHERE id = %s)
+                    AND created_at < (SELECT created_at FROM tasting_sheets WHERE id = %s)
+                ORDER BY created_at DESC LIMIT 1""",
+            (user_id, sheet_id, sheet_id, sheet_id),
+        )
+        row = cur.fetchone()
+        return _sheet_row(row) if row else None
 
 
 # --- Label tasks (Level 2 medal) ---

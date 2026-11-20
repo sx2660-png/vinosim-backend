@@ -37,6 +37,7 @@ class AgentRequest(BaseModel):
     step: str | None = Field(
         default=None, description="Sheet line the learner is on: appearance | nose | palate | liking"
     )
+    sheet_id: int | None = Field(default=None, description="A saved sheet to talk about")
 
 
 # --- Levels: exams, tasting sheets, bonus ---
@@ -49,6 +50,15 @@ class ExamSubmit(BaseModel):
     user_id: str
     attempt_id: int
     answers: dict[str, str] = Field(description='{"<question_id>": "B", ...}')
+
+
+class SheetFeedbackIn(BaseModel):
+    user_id: str
+    sheet_id: int
+
+
+class SheetFeedback(BaseModel):
+    feedback: str = Field(description="2-3 sentence tutor note on the learner's sheet")
 
 
 class SheetIn(BaseModel):
