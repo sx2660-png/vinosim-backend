@@ -317,6 +317,37 @@ def questions_for_learner(ids: list[int]) -> list[dict[str, Any]]:
     return [found[i] for i in ids if i in found]
 
 
+_STUDY_LINKS_READY = False
+
+
+def _study_links_ready() -> bool:
+    """True once migration 008 (articles.slug, quiz_questions.study_slug) is applied."""
+    global _STUDY_LINKS_READY
+    if not _STUDY_LINKS_READY:
+        with cursor() as cur:
+            cur.execute(
+                """SELECT count(*) FROM information_schema.columns
+                   WHERE (table_name = 'quiz_questions' AND column_name = 'study_slug')
+                      OR (table_name = 'articles' AND column_name = 'slug')"""
+            )
+            _STUDY_LINKS_READY = cur.fetchone()[0] == 2
+    return _STUDY_LINKS_READY
+
+
+def study_articles_for(ids: list[int]) -> dict[int, dict[str, Any]]:
+    """The Study article that explains each question, keyed by question id."""
+    if not ids or not _study_links_ready():
+        return {}
+    with cursor() as cur:
+        cur.execute(
+            """SELECT q.id, a.id, a.title FROM quiz_questions q
+               JOIN articles a ON a.slug = q.study_slug
+               WHERE q.id = ANY(%s)""",
+            (ids,),
+        )
+        return {r[0]: {"id": r[1], "title": r[2]} for r in cur.fetchall()}
+
+
 def answer_key(ids: list[int]) -> dict[int, dict[str, str]]:
     with cursor() as cur:
         cur.execute(
