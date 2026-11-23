@@ -6,7 +6,9 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
 export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
 read -rp "Host (e.g. something.proxy.rlwy.net): " PGHOST
-read -rp "Port: " PGPORT
+PGHOST=${PGHOST#*://}; PGHOST=${PGHOST##*@}
+if [[ "$PGHOST" == *:* ]]; then PGPORT=${PGHOST##*:}; PGPORT=${PGPORT%%/*}; PGHOST=${PGHOST%%:*}; echo "Using host $PGHOST, port $PGPORT"; fi
+[[ -n "${PGPORT:-}" ]] || read -rp "Port: " PGPORT
 read -rp "User [postgres]: " PGUSER; PGUSER=${PGUSER:-postgres}
 read -rp "Database [railway]: " PGDATABASE; PGDATABASE=${PGDATABASE:-railway}
 read -rsp "Password: " PGPASSWORD; echo
