@@ -17,7 +17,7 @@ Educational Communication and Technology, New York University [[TO ADD: departme
 
 VinoSim is a mobile wine-learning app for adults who meet wine in social settings. It grew out of a wine reception I skipped because I did not feel able to talk about wine. Industry surveys suggest that this kind of social unease is common, and research on wine expertise places the gap between novices and experts in vocabulary and concepts rather than in sensory acuity. The entry-level qualifications of the Wine & Spirit Education Trust (WSET) teach the right words but assess them only with multiple-choice questions, with no practice in producing a description. VinoSim focuses on the step those exams leave out: guiding learners to describe the wine in their glass in their own words, so that a professional vocabulary becomes a source of social confidence.
 
-In the first semester (an elective course), the project produced a tutor prototype built on retrieval-augmented generation (RAG) and a three-wine designer probe. In the second semester of the thesis, the target audience narrowed to early-career professionals who attend business dinners. Drawing on a ten-person survey and a class critique, I rebuilt the app around two levels modeled on WSET Levels 1 and 2. VinoSim now includes a four-line tasting sheet that the AI tutor guides line by line, a 160-question bank across the two levels, label tasks, and a medal system.
+VinoSim began as an assignment for an elective course, where it produced a tutor prototype built on retrieval-augmented generation (RAG) and a three-wine designer probe. In the second semester of my thesis year, I switched my thesis project to VinoSim, and the target audience narrowed to early-career professionals who attend business dinners. Drawing on a ten-person survey and a class critique, I rebuilt the app around two levels modeled on WSET Levels 1 and 2. VinoSim now includes a four-line tasting sheet that the AI tutor guides line by line, a 160-question bank across the two levels, label tasks, and a medal system.
 
 *Keywords:* wine education, tasting vocabulary, scaffolding, retrieval-augmented generation, mobile learning
 
@@ -33,7 +33,7 @@ VinoSim is a mobile learning app for wine beginners. It helps learners turn a di
 
 ## Where It Started
 
-The project began with a social regret. A friend invited me to a formal event with a wine tasting (Figure 1). Embarrassed by how little I knew about wine, I went back and forth and finally stayed home, only to hear afterward that many people I would have liked to meet had been there. In that moment, a glass of wine felt like an exam I was bound to fail. Charts of grapes and regions are easy to memorize, I realized, but what you actually need to understand stays on the palate and is gone when the glass is empty. VinoSim started there.
+The project began with a social regret. A friend invited me to a formal event with a wine tasting (Figure 1). Embarrassed by how little I knew about wine, I went back and forth and finally stayed home, only to hear afterward that many people I would have liked to meet had been there. In that moment, a glass of wine felt like an exam I was bound to fail. Charts of grapes and regions are easy to memorize, I realized, but what you actually need to understand stays on the palate and is gone when the glass is empty. VinoSim started there, first as an assignment for an elective course. In the second semester of my thesis year, I changed my thesis project to VinoSim and carried that work forward.
 
 **Figure 1**
 
@@ -100,15 +100,15 @@ The rest of the paper is organized as follows. Section II describes the design p
 
 ## The Process Followed
 
-I followed a short, solo adaptation of design thinking, with the shape of the Double Diamond underneath it (Design Council, 2019): open the problem, close on a frame, open the possible products, and close on one loop that can be built and checked. I did not run a full ADDIE cycle. The constraint was a single designer who could write software, with one semester for each pass. That constraint suited the project. The honest first move was a precise prototype checked against published tasting language, not a claim about learning gains.
+I followed a short, solo adaptation of design thinking, with the shape of the Double Diamond underneath it (Design Council, 2019): open the problem, close on a frame, open the possible products, and close on one loop that can be built and checked. I did not run a full ADDIE cycle. The constraint was a single designer who could write software, with one pass in the elective course and one in the thesis semester. That constraint suited the project. The honest first move was a precise prototype checked against published tasting language, not a claim about learning gains.
 
 The project went through the diamond twice (Figure 2). The first pass framed the problem and built a prototype whose answers could be traced to stored notes. The second reopened the define stage with new evidence from the survey and the class critique, redefined the learning goal with backward design (Wiggins & McTighe, 2005), and rebuilt the product around that goal. The second pass was not planned at the start. It is the main iteration reported in Section VII.
 
 **Figure 2**
 
-*The Design Process Across Two Semesters*
+*The Design Process: Elective Course and Thesis Semester*
 
-[[FIGURE: two diamonds. Semester 1: Frame → Research → Ideate → Prototype. Semester 2: Redefine → Critique → Build → Evaluate and iterate. An arrow from the November 11 critique back to Redefine.]]
+[[FIGURE: two diamonds. Elective course: Frame → Research → Ideate → Prototype. Thesis semester 2: Redefine → Critique → Build → Evaluate and iterate. An arrow from the November 11 critique back to Redefine.]]
 
 *Note.* Each diamond opens (research, ideas) and then closes (a frame, a build). The second diamond began from the first prototype.
 
@@ -122,16 +122,16 @@ Table 2 lists each stage with its goal, the methods used, the artifacts they pro
 
 | Stage | Goal | Methods → artifacts | AI collaboration |
 |---|---|---|---|
-| 1. Frame (Oct–Dec 2025) | Find a problem that one design cycle could address | Written problem notes → the frame: from a felt cue to a shared word; a loop of quiz, reading, tutor, and cellar | None |
+| 1. Frame (elective course, Oct–Dec 2025) | Find a problem that one design cycle could address | Written problem notes → the frame: from a felt cue to a shared word; a loop of quiz, reading, tutor, and cellar | None |
 | 2. Research the gap | Learn whether the difficulty is information, smell, or language, and what already exists | Reading on wine expertise and the WSET tasting approach; desk comparison of existing support; three-wine designer probe → landscape findings and two rules for the tutor | An AI writing tool helped organize notes; it was not used as a source of wine facts |
 | 3. Ideate and cut | Produce several responses; keep only what attacks the translation | Six written concepts and four filters → the lead concept (Section IV) | [[TO ADD: how you used AI tools when ideating, if at all]] |
 | 4. Prototype | Make the loop run on a phone and make answers traceable | Front end from Google AI Studio; six n8n workflows; Gemini; a pgvector index of 12, later 19, teaching notes → v0 prototype | Gemini runs inside the product; the v0 front end was AI-generated |
-| 5. Redefine | Choose a learner and a goal that can be checked | Ten-person survey; close reading of the WSET Level 1 and 2 specifications; backward design → the four-line sheet as evidence; two levels | Claude as a sounding board for each version of the goal |
+| 5. Redefine (thesis semester 2) | Choose a learner and a goal that can be checked | Ten-person survey; close reading of the WSET Level 1 and 2 specifications; backward design → the four-line sheet as evidence; two levels | Claude as a sounding board for each version of the goal |
 | 6. Critique (Nov 11, 2026) | Get outside eyes before building the rest | Capstone class critique → three design changes | An AI note-taker summarized the meeting; used only as a reminder because its numbers were wrong |
 | 7. Build (Nov 2026) | Ship both levels on a phone | Python back end (FastAPI, LangGraph); Lovable front end; 160-question bank → live app on November 17, 2026 | Claude wrote and revised much of the back end and SQL; Lovable generated the first screens |
 | 8. Evaluate and iterate (Nov 2026) | Find what breaks and fix it | Retrieval test; question-bank validation; live walkthrough → feature-by-iteration matrix (Table 6) | Claude helped run the tests and draft fixes |
 
-In the first semester there were no participants other than me, and I describe it that way. Primary research with other people began in the second semester. The survey went to 10 people I know, using the same short form for everyone. [[TO ADD: how you recruited the 10 people, when the survey ran, the format, and basic demographics]] The critique took place in the Capstone Thesis Class. [[TO ADD: who gave feedback (instructor and number of classmates) and how it was recorded]]
+During the elective course there were no participants other than me, and I describe it that way. Primary research with other people began after VinoSim became my thesis project. The survey went to 10 people I know, using the same short form for everyone. [[TO ADD: how you recruited the 10 people, when the survey ran, the format, and basic demographics]] The critique took place in the Capstone Thesis Class. [[TO ADD: who gave feedback (instructor and number of classmates) and how it was recorded]]
 
 AI tools were part of building, not a source of evidence. I ran and tested the code myself and checked every number in this paper against its original source. When an AI meeting summary reported figures that did not match the sources, I discarded them. [[TO ADD: confirm the extent of your own code and question review]] The full statement is in the AI Acknowledgement.
 
@@ -163,17 +163,17 @@ Reading the two specifications side by side made the gap clear. Both levels teac
 
 Cognitive research on wine expertise shaped the project's learning goal more than any other body of work. Experts and nonexperts use very different language to describe the same wine (Lawless, 1984). Experts are not physiologically more sensitive to smell; their real advantage is recognizing wine-specific odors and semantic memory, that is, knowledge stored as words and concepts (Parr et al., 2002). Background knowledge guides experts toward particular flavor cues, a "knowing nose" (Hughson & Boakes, 2002). Solomon (1990, 1997) further argued that becoming an expert is essentially a conceptual change: experts group wines by style, which makes their descriptions useful to other people. Wine experts also describe wines far more consistently than novices, while coffee experts show no such advantage, which confirms that wine culture has trained a highly shared vocabulary (Croijmans & Majid, 2016).
 
-## First-Semester Research: A Designer Probe
+## Elective-Course Research: A Designer Probe
 
-In the first semester I tested whether this translation could be built and checked. I wrote beginner-style descriptions of three wines (Penfolds Bin 389, Cloudy Bay Sauvignon Blanc, and Sassicaia) and compared the prototype's correction replies with published tasting notes. I was the only evaluator, so the probe tested the design, not learning. The structural matches were the ones the product exists to make: "mouth water a lot, sour" mapped to crisp acidity, and "dries my gums but polished" to firm but refined tannin. The misses mattered more. A "weird green leaf smell" was ignored, and "pencil shavings" was treated as generic oak. Two rules came from this. The tutor must address any smell the learner names, even if only to say its notes do not cover it, and it should be most careful with structure, where it is most reliable (Appendix E).
+In the elective course I tested whether this translation could be built and checked. I wrote beginner-style descriptions of three wines (Penfolds Bin 389, Cloudy Bay Sauvignon Blanc, and Sassicaia) and compared the prototype's correction replies with published tasting notes. I was the only evaluator, so the probe tested the design, not learning. The structural matches were the ones the product exists to make: "mouth water a lot, sour" mapped to crisp acidity, and "dries my gums but polished" to firm but refined tannin. The misses mattered more. A "weird green leaf smell" was ignored, and "pencil shavings" was treated as generic oak. Two rules came from this. The tutor must address any smell the learner names, even if only to say its notes do not cover it, and it should be most careful with structure, where it is most reliable (Appendix E).
 
-## Second-Semester Research: A Survey of 10
+## Thesis-Semester Research: A Survey of 10
 
 To see whether my experience matched other people's, I gave a short form to 10 people I know. It is a convenience sample, so I report counts and read them as signals (Appendix A). Seven of the 10 said they mostly stay quiet at dinners where wine is discussed, three of them because they lacked the words and three because they feared being judged. None had been offered a wine class. The open item was the most useful. Asked to describe a red wine, five people named only the sensation ("dry," "astringent," or the Chinese word 涩, *sè*) without the word tannin. Three wrote "I don't know," and two already used "tannin." Seven said they would fill in a simple tasting sheet, and several asked for a memorized line to get through the night. The five who named only the sensation are the clearest picture of the learner: they felt the tannin but did not know how to say it in shared terms.
 
 ## Learner Profile
 
-The second-semester target learner is a composite persona rather than a single fictional individual (Figure 3).
+The thesis-semester target learner is a composite persona rather than a single fictional individual (Figure 3).
 
 - **Social situation:** early in a career or in graduate school; occasionally attends business dinners, receptions, or alumni events where wine is served.
 - **Knowledge base:** little wine knowledge, but able to describe sensations in everyday words ("dry," "thick," "sharp").
@@ -223,7 +223,7 @@ Level 2, "Grapes, Regions and Labels," covers reading a label, the typical style
 
 ## Six Concepts and the Lead Idea
 
-In the first semester I wrote out six responses to the research and filtered them. I include the ones I cut, because the cuts are the rationale.
+In the elective course I wrote out six responses to the research and filtered them. I include the ones I cut, because the cuts are the rationale.
 
 1. **History Kaleidoscope.** One year seen from several sides, with sources on every card. Set aside because a responsible history tool needs contested sources and a review process. It remains the reason VinoSim is about structure rather than trivia.
 2. **A wine encyclopedia.** Short articles on grapes, regions, and terms. Useful, and kept as Study, but on its own it repeats the textbook: a learner can read "tannin" and still not know whether tonight's drying feeling is tannin.
@@ -246,7 +246,7 @@ The first working version was built quickly with low-code tools (Figure 5). A Re
 
 *Note.* [[TO ADD: one-line description of this figure, e.g., the v0 screens or the n8n workflows]]
 
-The prototype showed that the idea worked, and it showed two limits. Visual workflows were hard to version and change in small steps. More importantly, the tutor had no learning goal behind it: it answered questions well, but nothing moved the learner toward a finished description. Those two limits set the agenda for the second semester: rebuild the back end so it could change reliably, and define one learning goal for the whole app to serve.
+The prototype showed that the idea worked, and it showed two limits. Visual workflows were hard to version and change in small steps. More importantly, the tutor had no learning goal behind it: it answered questions well, but nothing moved the learner toward a finished description. Those two limits set the agenda once VinoSim became my thesis project: rebuild the back end so it could change reliably, and define one learning goal for the whole app to serve.
 
 # V. Design Rationale
 
@@ -304,7 +304,7 @@ The main strategies are scaffolded dialogue, word cards, retrieval practice thro
 
 ## Logic Model
 
-Table 4 merges the first-semester logic model with the current design. The arrows are design hypotheses, not results.
+Table 4 merges the elective-course logic model with the current design. The arrows are design hypotheses, not results.
 
 **Table 4**
 
@@ -380,7 +380,7 @@ Study holds short articles such as "What are tannins?" Articles are ordered by a
 
 ## Architecture
 
-The first-semester n8n workflows were rebuilt as a Python service (Figure 8). FastAPI serves the endpoints. LangGraph runs the tutor as a small graph: load history, route by mode, retrieve notes (correction only), answer, and save the turn. Gemini provides the chat, vision, and embedding models. Postgres with pgvector stores the notes, questions, sheets, and profiles. Railway hosts the back end, and the Lovable front end runs in the browser. A compatibility layer kept the old front end working while everything behind it was replaced, which let me test the new back end against a known interface. Leaving low-code tools was practical: code can be versioned, tested, and changed in small steps.
+The elective-course n8n workflows were rebuilt as a Python service (Figure 8). FastAPI serves the endpoints. LangGraph runs the tutor as a small graph: load history, route by mode, retrieve notes (correction only), answer, and save the turn. Gemini provides the chat, vision, and embedding models. Postgres with pgvector stores the notes, questions, sheets, and profiles. Railway hosts the back end, and the Lovable front end runs in the browser. A compatibility layer kept the old front end working while everything behind it was replaced, which let me test the new back end against a known interface. Leaving low-code tools was practical: code can be versioned, tested, and changed in small steps.
 
 **Figure 8**
 
@@ -400,8 +400,8 @@ A first-year analyst has a team dinner next week. The analyst confirms their age
 
 Seven methods have shaped the design so far. None of them measures learning, a gap discussed at the end of this section.
 
-1. **Designer probe (first semester).** Three wines, beginner-style descriptions, replies compared with published notes. It produced the rule that the tutor must address any smell the learner names (Section III).
-2. **Survey of 10 (second semester).** It confirmed the core gap, supported a short written sheet, argued against leaderboards, and surfaced the request for memorized lines, which I declined (Section III).
+1. **Designer probe (elective course).** Three wines, beginner-style descriptions, replies compared with published notes. It produced the rule that the tutor must address any smell the learner names (Section III).
+2. **Survey of 10 (thesis semester).** It confirmed the core gap, supported a short written sheet, argued against leaderboards, and surfaced the request for memorized lines, which I declined (Section III).
 3. **Class critique (November 11, 2026).** Three points changed the design: help learners understand *why* a wine feels as it does; respect personal perception rather than chase a standard answer; and focus on the social situation.
 4. **Retrieval test.** For "Why does this red wine feel so drying?", the live index ranked Tannin first (0.747), then Order of checks on the palate, Acidity, and Body. This is a check on one query, not a systematic evaluation.
 5. **Question-bank validation.** Pool shares are within two percentage points of the WSET weights for every learning outcome; the migration was applied twice on a scratch database with no change in row counts; every question has four options and one correct answer, spread evenly across letters (Appendix B).
@@ -410,7 +410,7 @@ Seven methods have shaped the design so far. None of them measures learning, a g
 
 ## The Biggest Iteration
 
-The largest change was not a feature. The first semester designed for an adult self-learner at home and explicitly avoided a syllabus. The survey pointed to a more specific moment, the work dinner, and the critique asked for structure that explains why a wine feels as it does. The learner narrowed to early-career professionals, and the scope grew to two levels mirroring WSET, because a recognized content scope gives learners a path forward and gives me a checkable boundary for the content. The first semester's commitments survived the change: private practice, a quiet interface, a grounded tutor that admits gaps, and the learner doing the thinking.
+The largest change was not a feature. The elective-course version was designed for an adult self-learner at home and explicitly avoided a syllabus. The survey pointed to a more specific moment, the work dinner, and the critique asked for structure that explains why a wine feels as it does. The learner narrowed to early-career professionals, and the scope grew to two levels mirroring WSET, because a recognized content scope gives learners a path forward and gives me a checkable boundary for the content. The commitments from the elective course survived the change: private practice, a quiet interface, a grounded tutor that admits gaps, and the learner doing the thinking.
 
 ## Feature-by-Iteration Matrix
 
@@ -422,7 +422,7 @@ The largest change was not a feature. The first semester designed for an adult s
 |---|---|---|
 | Target learner and scope | Home self-learner with no syllabus; the survey pointed to work dinners, and the critique asked for structure | Narrowed to early-career professionals; two levels mirroring WSET Levels 1 and 2 |
 | Learning goal | "Speak like an expert" did not fit the research or the time learners have | Redefined by backward design as a four-line sheet in the learner's own words |
-| Tutor and named smells (first semester) | The probe showed the tutor dropping a named "green leaf" smell | Rule: address every named smell, or say the notes do not cover it |
+| Tutor and named smells (elective course) | The probe showed the tutor dropping a named "green leaf" smell | Rule: address every named smell, or say the notes do not cover it |
 | Palate standard | Requiring two structure words made the sheet feel like a test | One structure word tied to its sensation; aroma and liking never judged |
 | Fourth line | A quality conclusion asked beginners for a judgment they could not yet make | "Do I like it? Why?" |
 | Sheet layout | One field per line implied one correct description | Learner's words beside "common words people use" |
@@ -477,7 +477,7 @@ The contribution is modest and specific. VinoSim offers a workable pattern for t
 
 [[TO ADD: align this statement with the wording required by your thesis section's AI policy]]
 
-I used Claude (Anthropic) throughout this project to draft and edit the text of this paper and my presentation scripts, organize notes, check references, and write code for the back end, the web client, the database migrations, and the question bank, which I specified through a blueprint. In the first semester, I used an AI writing tool to organize the paper, and the v0 front end was generated with Google AI Studio. Inside the product, Google's Gemini models write the tutor's replies and sheet notes, read labels, create embeddings, and summarize tutor turns into the learner profile. The redesigned screens were first generated with Lovable. An AI note-taker summarized the class critique; its numbers were wrong, so I used none of them. I reviewed and revised all AI-assisted text, code, and content, and I am responsible for the final work. All data in this paper come from original sources or from my own survey and tests.
+I used Claude (Anthropic) throughout this project to draft and edit the text of this paper and my presentation scripts, organize notes, check references, and write code for the back end, the web client, the database migrations, and the question bank, which I specified through a blueprint. During the elective course, I used an AI writing tool to organize the course paper, and the v0 front end was generated with Google AI Studio. Inside the product, Google's Gemini models write the tutor's replies and sheet notes, read labels, create embeddings, and summarize tutor turns into the learner profile. The redesigned screens were first generated with Lovable. An AI note-taker summarized the class critique; its numbers were wrong, so I used none of them. I reviewed and revised all AI-assisted text, code, and content, and I am responsible for the final work. All data in this paper come from original sources or from my own survey and tests.
 
 <!-- pagebreak -->
 
@@ -657,9 +657,9 @@ This protocol was written in October 2026, before any data were collected, and h
 
 <!-- pagebreak -->
 
-# Appendix E: Semester 1 Designer Probe
+# Appendix E: Elective-Course Designer Probe
 
-In the first semester, the author wrote descriptions the way a beginner speaks for three wines (Penfolds Bin 389, Cloudy Bay Sauvignon Blanc, and Sassicaia) and compared the prototype's correction replies with published tasting language. The author was the only evaluator. The probe tested the design, not learning.
+During the elective course, the author wrote descriptions the way a beginner speaks for three wines (Penfolds Bin 389, Cloudy Bay Sauvignon Blanc, and Sassicaia) and compared the prototype's correction replies with published tasting language. The author was the only evaluator. The probe tested the design, not learning.
 
 **Table E1**
 
