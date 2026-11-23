@@ -167,6 +167,7 @@ def exam_submit(body: ExamSubmit):
     if attempt["submitted"]:
         raise HTTPException(409, "This exam was already submitted.")
     key = db.answer_key(attempt["question_ids"])
+    study = db.study_articles_for(attempt["question_ids"])
     review, score = [], 0
     for qid in attempt["question_ids"]:
         given = body.answers.get(str(qid), "").strip().upper()
@@ -174,7 +175,7 @@ def exam_submit(body: ExamSubmit):
         correct = given == right
         score += correct
         review.append({"id": qid, "given": given, "correct_answer": right, "correct": correct,
-                       "explanation": key[qid]["explanation"]})
+                       "explanation": key[qid]["explanation"], "study": study.get(qid)})
     config = db.level_exam_config(attempt["app_level"]) or {"pass_pct": 70}
     passed = score * 100 >= config["pass_pct"] * attempt["total"]
     db.finish_exam_attempt(body.attempt_id, {k: v.strip().upper() for k, v in body.answers.items()}, score, passed)

@@ -142,6 +142,7 @@ def quiz_submit(sub: QuizSubmit):
         "correct": is_correct,
         "correct_answer": q["correct_answer"],
         "explanation": q["explanation"],
+        "study": db.study_articles_for([sub.question_id]).get(sub.question_id),
         "score": score,
         "new_medals": new_medals,
     }
