@@ -329,9 +329,9 @@ VinoSim has five screens (Home, Quiz, Study, Tutor, and Cellar), organized into 
 
 *The Five Main Screens*
 
-![User flow: Home, Quiz, Study, Tutor, Cellar](figures/fig2-user-flow.png){width=6}
+![The five main screens: Home, Quiz, Study, Tutor, Cellar](figures/fig6-main-screens.png){width=6.5}
 
-*Note.* From left to right: Home, Quiz, a Study article, the Tutor, and the Cellar.
+*Note.* From left to right: Home, Quiz, Study, Tutor, and Cellar, captured from the running app at phone size (390 × 844) on November 22, 2026, with a test account.
 
 ## Two Levels and Medals
 
@@ -364,7 +364,9 @@ The first three lines match the WSET Level 1 tasting framework. An earlier fourt
 
 *The Tasting Sheet After Saving*
 
-[[FIGURE: left, an incomplete sheet scoring 4/6 with the tutor's note; right, a re-tasted wine scoring 6/6 with the earlier tasting open. To be captured on the live app once the Gemini quota resets.]]
+![Two saved sheets: an incomplete first tasting scoring 4/6 and a complete re-taste scoring 6/6](figures/fig7-sheet-after-saving.png){width=6}
+
+*Note.* Left: a first tasting with no structure word, scored 4 of 6; the tutor quotes two lines and names one next step. Right: a re-taste of the same wine, scored 6 of 6; the tutor quotes the new structure line and points to what changed since the earlier sheet. Both notes were written by the live model for a test account on November 22, 2026.
 
 ## The Tutor
 
@@ -398,7 +400,7 @@ A first-year analyst has a team dinner next week. The analyst confirms their age
 
 ## Methods
 
-Seven methods have shaped the design so far. None of them measures learning, a gap discussed at the end of this section.
+Eight methods have shaped the design so far. None of them measures learning, a gap discussed at the end of this section.
 
 1. **Designer probe (elective course).** Three wines, beginner-style descriptions, replies compared with published notes. It produced the rule that the tutor must address any smell the learner names (Section III).
 2. **Survey of 10 (thesis semester).** It confirmed the core gap, supported a short written sheet, argued against leaderboards, and surfaced the request for memorized lines, which I declined (Section III).
@@ -407,6 +409,7 @@ Seven methods have shaped the design so far. None of them measures learning, a g
 5. **Question-bank validation.** Pool shares are within two percentage points of the WSET weights for every learning outcome; the migration was applied twice on a scratch database with no change in row counts; every question has four options and one correct answer, spread evenly across letters (Appendix B).
 6. **Live walkthrough (November 19, 2026).** A fresh test account went through the whole path on the deployed service, from the age gate to both medals. It found four defects, all fixed that week.
 7. **Prompt testing (November 20, 2026).** The tutor note was tested on sheets that were incomplete, complete, re-tasted, and written in Chinese, and the tutor on an unsure learner and a mismatched word.
+8. **Coverage check (November 22, 2026).** Every quiz and exam question was mapped to the Study note that explains it, with the supporting sentence quoted from the note. Before the check, 8 short notes stood behind 160 questions; after it, 30 notes cover all 160, and each question is linked to exactly one.
 
 ## The Biggest Iteration
 
@@ -435,9 +438,22 @@ The largest change was not a feature. The elective-course version was designed f
 | Feedback after saving | Saving gave only a rule-based list of what was missing; learners did not see what they did well | Completeness score plus a short tutor note that quotes the learner; the note loads after the save |
 | Generic praise in the note | Even when told not to, the model wrote "great" or "很棒" | The note is checked for stock praise and rewritten once if found |
 | Re-tasting | The only way to revise a sheet was to overwrite it, losing evidence of growth | Edit and re-taste from the Cellar; earlier notes hidden until saved; each wine counts once |
+| Study notes and quiz questions | Only 8 short notes stood behind 160 questions, so many questions tested facts no note taught | Notes expanded to 30 so that every question is covered; a wrong answer links to its note (Figure 9) |
 | Listening and responding (critique 3) | Could not be designed and evaluated this semester | Level 1 LO3, moved to future work |
 
 *Note.* The walkthrough and prompt tests were run by the author with test accounts. They show that features work as designed, not that they help anyone learn.
+
+## Linking Mistakes to Reading
+
+A quiz question is only fair if the app has taught what it tests. The coverage check showed that most questions had no note behind them, so a learner who missed one had nowhere to go but the one-line explanation. I expanded the Study notes until each question's answer is stated in a note, in plain words, together with why the common wrong answers are wrong. Each question now stores a link to its note. When a practice answer is wrong, a "Read the note" card appears under the explanation; the exam review shows the same card for every missed question (Figure 9). Opening the note keeps the question in place, so Back returns to it. This applies retrieval practice and feedback together: the miss tells the learner what to read, and the note gives the reason, not just the letter.
+
+**Figure 9**
+
+*From a Wrong Answer to the Matching Note*
+
+![A wrong quiz answer with a Read the note card, and the note it opens](figures/fig9-wrong-answer-to-note.png){width=5}
+
+*Note.* Captured on November 22, 2026, from a local build of the app with a test account. The link requires database migration 008 on the deployed service.
 
 ## What Has Not Been Evaluated
 
@@ -464,8 +480,6 @@ The contribution is modest and specific. VinoSim offers a workable pattern for t
 # IX. Future Directions
 
 **Outcome study.** The next step is a small design check, planned before any data are collected (Appendix D). About five people take part: at least two who feel outside wine talk and at least two who already taste with a grid. With one red wine and about 20 minutes each, they describe the wine with the app closed, use the tutor on their own sentence, and describe it again. Each before-and-after pair is marked as a hit (a structure word tied to a sensation they can point to, where the first description had none), a partial, or a miss, using rules fixed in advance. A short questionnaire also asks who the screen seems to be for. Five people can show whether the goal is observable, not that it holds for wine drinkers in general. A larger study would add the full four-line sheet, several wines, a second scorer, and a follow-up after a real event.
-
-**Linking mistakes to reading.** When a learner misses a quiz question, the app could point to the Study note that explains it, so that the short articles support the exam questions directly.
 
 **Fading the scaffold.** Support should be withdrawn as the learner improves (Collins et al., 1989), for example by asking the learner to write each line before the tutor responds. The real test is a new bottle without the tutor.
 
