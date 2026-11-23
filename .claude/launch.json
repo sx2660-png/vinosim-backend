@@ -1,0 +1,52 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vinosim-api",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd '/Users/ashley/Desktop/\ud83d\udcbb Code Projects/vinosim-local' && exec .venv/bin/python -m uvicorn app.main:app --port 8000"
+      ],
+      "port": 8000
+    },
+    {
+      "name": "vinosim-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "web",
+        "run",
+        "dev"
+      ],
+      "port": 5173
+    },
+    {
+      "name": "lovable-web",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd '/Users/ashley/Desktop/\ud83d\udcbb Code Projects/vino-wisdom-trainer' && VITE_API_BASE=http://localhost:8000 exec bun run dev --port 8080"
+      ],
+      "port": 8080
+    },
+    {
+      "name": "lovable-live",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd '/private/tmp/claude-501/-Users-ashley-Desktop----Code-Projects-vinosim-local/56d58689-d96e-4976-a9e0-229aedb2069c/scratchpad/lovable' && exec bun run dev --port 8081"
+      ],
+      "port": 8081
+    },
+    {
+      "name": "lovable-scratch-local",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd '/private/tmp/claude-501/-Users-ashley-Desktop----Code-Projects-vinosim-local/56d58689-d96e-4976-a9e0-229aedb2069c/scratchpad/lovable' && VITE_API_BASE=http://localhost:8000 exec bun run dev --port 8082"
+      ],
+      "port": 8082
+    }
+  ]
+}
