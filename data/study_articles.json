@@ -3,7 +3,7 @@
   {
    "slug": "l1-vine-and-grape",
    "title": "How grapes grow and ripen",
-   "category": "Term",
+   "category": "How It's Made",
    "topics": [
     "acidity",
     "sweetness",
@@ -14,7 +14,7 @@
   {
    "slug": "l1-making-wine",
    "title": "How red, white and rosé wines are made",
-   "category": "Term",
+   "category": "How It's Made",
    "topics": [
     "tannin",
     "appearance",
@@ -25,7 +25,7 @@
   {
    "slug": "l1-wine-types",
    "title": "Still, sparkling and fortified wines",
-   "category": "Term",
+   "category": "How It's Made",
    "topics": [
     "sparkling",
     "champagne",
@@ -36,7 +36,7 @@
   {
    "slug": "l1-art-of-tasting",
    "title": "The Art of Wine Tasting",
-   "category": "Term",
+   "category": "Tasting",
    "topics": [
     "tasting",
     "palate",
@@ -49,7 +49,7 @@
   {
    "slug": "l1-body-alcohol-sweetness",
    "title": "Body, alcohol and sweetness",
-   "category": "Term",
+   "category": "Tasting",
    "topics": [
     "body",
     "alcohol",
@@ -61,7 +61,7 @@
   {
    "slug": "l1-naming-smells",
    "title": "Naming what you smell",
-   "category": "Term",
+   "category": "Tasting",
    "topics": [
     "aroma",
     "nose",
@@ -73,7 +73,7 @@
   {
    "slug": "l1-white-grapes",
    "title": "The main white grapes",
-   "category": "Term",
+   "category": "Grapes & Regions",
    "topics": [
     "riesling",
     "burgundy",
@@ -85,7 +85,7 @@
   {
    "slug": "l1-black-grapes",
    "title": "The main black grapes",
-   "category": "Term",
+   "category": "Grapes & Regions",
    "topics": [
     "cabernet",
     "merlot",
@@ -98,7 +98,7 @@
   {
    "slug": "l1-red-wine-places",
    "title": "Famous red wine names",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "body",
     "tannin",
@@ -109,7 +109,7 @@
   {
    "slug": "l1-storing-wine",
    "title": "Storing wine and keeping an open bottle fresh",
-   "category": "Term",
+   "category": "At the Table",
    "topics": [
     "service"
    ],
@@ -118,7 +118,7 @@
   {
    "slug": "l1-serving-wine",
    "title": "Serving wine: temperature and opening",
-   "category": "Term",
+   "category": "At the Table",
    "topics": [
     "service",
     "sparkling",
@@ -129,7 +129,7 @@
   {
    "slug": "l1-food-and-wine",
    "title": "Food and wine: what changes in the glass",
-   "category": "Term",
+   "category": "At the Table",
    "topics": [
     "pairing"
    ],
@@ -138,7 +138,7 @@
   {
    "slug": "l2-bordeaux",
    "title": "Understanding Bordeaux",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "bordeaux",
     "cabernet",
@@ -151,7 +151,7 @@
   {
    "slug": "l2-vineyard-climate",
    "title": "Where grapes ripen: climate, slope and altitude",
-   "category": "Term",
+   "category": "How It's Made",
    "topics": [
     "acidity",
     "quality",
@@ -162,7 +162,7 @@
   {
    "slug": "l2-quality-categories",
    "title": "Quality categories on European labels",
-   "category": "Term",
+   "category": "Labels",
    "topics": [
     "label",
     "quality"
@@ -172,7 +172,7 @@
   {
    "slug": "l2-winemaking",
    "title": "Winemaking choices: skins, oak, lees and blending",
-   "category": "Term",
+   "category": "How It's Made",
    "topics": [
     "tannin",
     "acidity",
@@ -184,7 +184,7 @@
   {
    "slug": "l2-sweet-wines",
    "title": "How sweet wines are made",
-   "category": "Term",
+   "category": "How It's Made",
    "topics": [
     "sweetness",
     "acidity",
@@ -195,7 +195,7 @@
   {
    "slug": "l2-ageing-storage",
    "title": "Bottle ageing, storage and wine faults",
-   "category": "Term",
+   "category": "At the Table",
    "topics": [
     "tannin",
     "appearance",
@@ -207,7 +207,7 @@
   {
    "slug": "l2-service-pairing",
    "title": "Serving temperature and food pairing",
-   "category": "Term",
+   "category": "At the Table",
    "topics": [
     "service",
     "pairing",
@@ -220,7 +220,7 @@
   {
    "slug": "l2-burgundy-chardonnay",
    "title": "Burgundy, Chardonnay and Beaujolais",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "burgundy",
     "label",
@@ -231,7 +231,7 @@
   {
    "slug": "l2-pinot-noir-label",
    "title": "Reading a Pinot Noir label",
-   "category": "Term",
+   "category": "Labels",
    "topics": [
     "label",
     "pinot",
@@ -243,7 +243,7 @@
   {
    "slug": "l2-tuscany-sangiovese",
    "title": "Tuscany & Sangiovese",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "sangiovese",
     "tuscany",
@@ -257,7 +257,7 @@
   {
    "slug": "l2-italy-regional",
    "title": "Italy beyond Tuscany: Nebbiolo, Pinot Grigio and more",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "label",
     "tannin",
@@ -268,7 +268,7 @@
   {
    "slug": "l2-riesling-germany",
    "title": "Riesling and German wine labels",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "riesling",
     "label",
@@ -280,7 +280,7 @@
   {
    "slug": "l2-aromatic-whites",
    "title": "Sauvignon Blanc, Chenin Blanc and the Alsace whites",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "aroma",
     "acidity",
@@ -292,7 +292,7 @@
   {
    "slug": "l2-rhone-syrah",
    "title": "The Rhône Valley: Syrah, Grenache and Viognier",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "aroma",
     "body",
@@ -304,7 +304,7 @@
   {
    "slug": "l2-spain",
    "title": "Spain: Tempranillo, Rioja and Albariño",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "label",
     "quality",
@@ -315,7 +315,7 @@
   {
    "slug": "l2-new-world",
    "title": "New World regions: Chile, Argentina, South Africa and Australia",
-   "category": "Region",
+   "category": "Grapes & Regions",
    "topics": [
     "cabernet",
     "merlot",
@@ -326,7 +326,7 @@
   {
    "slug": "l2-sparkling",
    "title": "How sparkling wine gets its bubbles",
-   "category": "Term",
+   "category": "How It's Made",
    "topics": [
     "sparkling",
     "champagne",
@@ -338,7 +338,7 @@
   {
    "slug": "l2-fortified",
    "title": "Fortified wines: Port and Sherry",
-   "category": "Term",
+   "category": "How It's Made",
    "topics": [
     "sweetness",
     "alcohol",

@@ -253,14 +253,16 @@ def list_articles(category: str | None = None, user_id: str | None = None) -> li
         if category:
             cur.execute(
                 """
-                SELECT id, title, category, content, image, topics
+                SELECT id, title, category, content, image, topics,
+                       (SELECT min(q.app_level) FROM quiz_questions q WHERE q.study_slug = articles.slug) AS level
                 FROM articles WHERE category = %s ORDER BY id
                 """,
                 (category,),
             )
         else:
             cur.execute(
-                "SELECT id, title, category, content, image, topics FROM articles ORDER BY id"
+                "SELECT id, title, category, content, image, topics, "
+                "(SELECT min(q.app_level) FROM quiz_questions q WHERE q.study_slug = articles.slug) AS level FROM articles ORDER BY id"
             )
         rows = cur.fetchall()
     articles = []
@@ -273,6 +275,8 @@ def list_articles(category: str | None = None, user_id: str | None = None) -> li
             "category": row[2],
             "content": row[3],
             "image": row[4],
+            # The lowest level whose questions this article explains (None for Bonus and older notes).
+            "level": row[6],
             "topics": topics,
             "match": matched,
             "score": score,
