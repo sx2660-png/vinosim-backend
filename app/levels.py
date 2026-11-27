@@ -49,7 +49,9 @@ def check_sheet(fields: dict[str, str]) -> tuple[bool, list[str], list[str]]:
     """Return (complete, structure_words found, what is still missing)."""
     missing = [line for line in ("appearance", "nose", "palate", "liking") if not fields.get(line, "").strip()]
     palate = fields.get("palate", "")
-    words = sorted({name for pattern, name in STRUCTURE_WORDS.items() if re.search(pattern, palate, re.IGNORECASE)})
+    # The "because" field is part of the palate line: "smooth, because it isn't very acidic" names acidity.
+    palate_line = f"{palate} {fields.get('palate_because', '')}"
+    words = sorted({name for pattern, name in STRUCTURE_WORDS.items() if re.search(pattern, palate_line, re.IGNORECASE)})
     if palate.strip():
         if not words:
             missing.append("palate_structure_word")
@@ -231,6 +233,11 @@ SHEET_FEEDBACK_SYSTEM = (
     "(a more specific word, a reason added, a line filled in). Only mention growth that is really "
     "there; if little changed, say what they noticed both times.\n"
     "Rules:\n"
+    "- Only praise what is really on the sheet. Read the 'Still missing' line first. If the palate "
+    "line has no structure word, never say it names or links to a structure word or a wine "
+    "structure. Instead, say what their feeling word captures (\"'smooth' tells me how it feels "
+    "as it goes down\") and invite them to pick one of the five words for that feeling, for "
+    "example body (light or full) or tannin (soft or drying) for 'smooth'.\n"
     "- Smell, flavour and liking have no wrong answers. Never correct them or say what this wine "
     "should smell or taste like; you have not tasted it.\n"
     "- No grades or scores, and never the words correct, wrong, mistake or should.\n"
